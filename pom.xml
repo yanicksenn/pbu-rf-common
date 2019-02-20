@@ -13,6 +13,7 @@
 		<version.junit.jupiter.api>5.2.0</version.junit.jupiter.api>
 		<version.junit.jupiter.engine>5.2.0</version.junit.jupiter.engine>
 		<version.junit.vintage.engine>5.2.0</version.junit.vintage.engine>
+		<version.junit.platform.launcher>1.2.0</version.junit.platform.launcher>
 		<version.validation.api>2.0.1.Final</version.validation.api>
 		<version.hibernate.core>5.4.0.Final</version.hibernate.core>
 		<version.hibernate.validator>6.0.13.Final</version.hibernate.validator>
@@ -37,7 +38,9 @@
 				<configuration>
 					<source>${version.maven.compiler.plugin.source}</source>
 					<target>${version.maven.compiler.plugin.target}</target>
-                	<!-- <compilerArgument>-proc:none</compilerArgument> -->
+					
+                	<compilerArgument>-proc:none</compilerArgument>
+                	
 					<annotationProcessors>
 						<annotationProcessor>ch.yanicksenn.label.LabelProcessor</annotationProcessor>
 						<annotationProcessor>ch.yanicksenn.metamodel.MetaModelProcessor</annotationProcessor>
@@ -83,6 +86,12 @@
 			<version>${version.junit.vintage.engine}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+	        <groupId>org.junit.platform</groupId>
+	        <artifactId>junit-platform-launcher</artifactId>
+	        <version>${version.junit.platform.launcher}</version>
+	        <scope>test</scope>
+	    </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
