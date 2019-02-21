@@ -76,19 +76,6 @@ public class ColorUtil {
 		
 		return new ColorXYZ(x, y, z);
 	}
-	
-	private static double _calculate_f_xyz(double v) {
-		double result;
-		
-		double vP3 = Math.pow(v, 3);
-		if (vP3 > E) {
-			result = vP3;
-		} else {
-			result = (((v * 116) - 16.0) / K);
-		}
-		
-		return result;
-	}
 
 	/**
 	 * Converts the <I>color</I> to an Lab-Color by the <I>illuminant</I>.
@@ -118,18 +105,40 @@ public class ColorUtil {
 		
 		return new ColorLab(l, a, b);
 	}
+
+//	/**
+//	 * Converts the <I>color</I> to an RGB-Color by the <I>illuminant</I>.
+//	 * 
+//	 * @param color Color.
+//	 * @param illuminant Illuminant.
+//	 * 
+//	 * @return Lab-Color.
+//	 */
+//	public static ColorRGB convertToRGB(ColorXYZ color, Illuminant illuminant) {
+//		Objects.requireNonNull(color, "color is not specified");
+//		Objects.requireNonNull(illuminant, "illuminant is not specified");
+//
+//		ColorXYZ rw = getReferenceWhite(illuminant);
+//
+//		
+//		
+//		return new ColorLab(l, a, b);
+//	}
+//	
+//	private static double _calculate_f_rgb(double v) {
+//		double result;
+//		
+//		if (v > E) {
+//			result = Math.pow(v, (1.0 / 3.0));
+//		} else {
+//			result = ((K * v) + 16.0) / 116.0;
+//		}
+//		
+//		return result;
+//	}
+//	
 	
-	private static double _calculate_f_lab(double v) {
-		double result;
-		
-		if (v > E) {
-			result = Math.pow(v, (1.0 / 3.0));
-		} else {
-			result = ((K * v) + 16.0) / 116.0;
-		}
-		
-		return result;
-	}
+	
 	
 	public static double calculateDeltaE2000(ColorLab color1, ColorLab color2) {
 		Objects.requireNonNull(color1, "color1 is not specified");
@@ -143,43 +152,45 @@ public class ColorUtil {
 		double a2 = color2.getA();
 		double b2 = color2.getB();
 		
-		double L_ = (L1 + L2) / 2.0;
+		double L_ = (L1 + L2) / 2.0; // OK
 		
-		double C1 = Math.sqrt(Math.pow(a1, 2.0) + Math.pow(b1, 2.0));
-		double C2 = Math.sqrt(Math.pow(a2, 2.0) + Math.pow(b2, 2.0));
-		double C = (C1 + C2) / 2.0;
+		double C1 = Math.sqrt(Math.pow(a1, 2.0) + Math.pow(b1, 2.0)); // OK
+		double C2 = Math.sqrt(Math.pow(a2, 2.0) + Math.pow(b2, 2.0)); // OK
+		double C = (C1 + C2) / 2.0; // OK
 		
-		double G = (1.0 - Math.sqrt(Math.pow(C, 7.0) / (Math.pow(C, 7.0) + Math.pow(25, 7.0))));
+		double G = (1.0 - Math.sqrt(Math.pow(C, 7.0) / (Math.pow(C, 7.0) + Math.pow(25, 7.0)))); // OK
 		
-		double a1_ = a1 * (1.0 + G);
-		double a2_ = a2 * (1.0 + G);
+		double a1_ = a1 * (1.0 + G); // OK
+		double a2_ = a2 * (1.0 + G); // OK
 		
-		double C1_ = Math.sqrt(Math.pow(a1_, 2) + Math.pow(b1, 2));
-		double C2_ = Math.sqrt(Math.pow(a2_, 2) + Math.pow(b2, 2));
-		double C_ = (C1_ + C2_) / 2;
+		double C1_ = Math.sqrt(Math.pow(a1_, 2) + Math.pow(b1, 2)); // OK
+		double C2_ = Math.sqrt(Math.pow(a2_, 2) + Math.pow(b2, 2)); // OK
+		double C_ = (C1_ + C2_) / 2; // OK
 		
-		double h1_ = Math.atan2(b1, a1_);
+		double h1_ = Math.toDegrees(Math.atan2(b1, a1_)); // OK
 		if (h1_ < 0.0) {
 			h1_ += 360.0;
 		}
 		
-		double h2_ = Math.atan2(b2, a2_);
+		double h2_ = Math.toDegrees(Math.atan2(b2, a2_)); // OK
 		if (h2_ < 0.0) {
 			h2_ += 360.0;
 		}
 		
-		double H_ = (h1_ + h2_ + 360.0) / 2.0;
+		double H_; // OK
 		if (Math.abs(h1_ - h2_) > 180.0) {
+			H_ = (h1_ + h2_ + 360) / 2.0;
+		} else {
 			H_ = (h1_ + h2_) / 2.0;
 		}
 		
 		double T = 1.0
-				- (0.17 * Math.toDegrees(Math.cos(Math.toRadians(H_ - 30.0))))
-				+ (0.24 * Math.toDegrees(Math.cos(Math.toRadians(2.0 * H_))))
-				+ (0.32 * Math.toDegrees(Math.cos(Math.toRadians(3.0 * H_ + 6.0))))
-				- (0.20 * Math.toDegrees(Math.cos(Math.toRadians(4.0 * H_ - 63.0))));
+				- (0.17 * Math.toDegrees(Math.cos(Math.toRadians((1.0 * H_) - 30.0))))
+				+ (0.24 * Math.toDegrees(Math.cos(Math.toRadians((2.0 * H_) + 0.0))))
+				+ (0.32 * Math.toDegrees(Math.cos(Math.toRadians((3.0 * H_) + 6.0))))
+				- (0.20 * Math.toDegrees(Math.cos(Math.toRadians((4.0 * H_) - 63.0)))); // OK
 		
-		double dh_;
+		double dh_; // OK
 		if (Math.abs(h2_ - h1_) <= 180.0) {
 			dh_ = h2_ - h1_;
 		} else if (Math.abs(h2_ - h1_) > 180.0 && h2_ <= h1_) {
@@ -188,23 +199,55 @@ public class ColorUtil {
 			dh_ = h2_ - h1_ - 360.0;
 		}
 		
-		double dL_ = L2 - L1;
-		double dC_ = C2_ - C1_;
-		double dH_ = 2.0 * Math.sqrt(C1_ * C2_ * Math.toDegrees((Math.sin(Math.toRadians(dh_ / 2.0)))));
+		double dL_ = L2 - L1; // OK
+		double dC_ = C2_ - C1_; // OK
+		double dH_ = 2.0 * Math.sqrt(C1_ * C2_ * Math.toDegrees(Math.sin(Math.toRadians(dh_ / 2.0)))); // OK
 		
-		double SL = 1.0 + ((0.015 * Math.pow(L_ - 50.0, 2.0)) / Math.sqrt(20.0 + Math.pow(L_ - 50.0, 2.0)));
-		double SC = 1.0 + 0.045 * C_;
-		double SH = 1.0 + 0.015 * C_ * T;
+		double SL = 1.0 + ((0.015 * Math.pow(L_ - 50.0, 2.0)) / Math.sqrt(20.0 + Math.pow(L_ - 50.0, 2.0))); // OK
+		double SC = 1.0 + (0.045 * C_); // OK
+		double SH = 1.0 + (0.015 * C_ * T); // OK
 		
-		double d0 = 30 * Math.exp(- Math.pow(((H_ - 275.0) / 25.0), 2.0));
+		double d0 = 30 * Math.exp(- Math.pow((H_ - 275.0) / 25.0, 2.0)); // OK
 		
-		double RC = 2.0 * Math.sqrt(Math.sqrt(Math.pow(C, 7.0) / (Math.pow(C, 7.0) + Math.pow(25, 7.0))));
-		double RT = -1.0 * RC * Math.toDegrees((Math.sin(Math.toRadians(2.0 * d0))));
+		double RC = 2.0 * Math.sqrt(Math.pow(C, 7.0) / (Math.pow(C, 7.0) + Math.pow(25, 7.0))); // OK
+		double RT = -1.0 * RC * Math.toDegrees((Math.sin(Math.toRadians(2.0 * d0)))); // OK
 		
-		double KL = 1.0;
-		double KC = 1.0;
-		double KH = 1.0;
+		double KL = 1.0; // OK
+		double KC = 1.0; // OK
+		double KH = 1.0; // OK
 		
+		double dE = Math.sqrt(
+			Math.pow(dL_ / (KL * SL), 2) + 
+			Math.pow(dC_ / (KC * SC), 2) + 
+			Math.pow(dH_ / (KH * SH), 2) + 
+			RT * (dC_ / (KC * SC)) * (dH_ / (KH * SH)));
 		
+		return dE;
+	}
+	
+	
+	private static double _calculate_f_xyz(double v) {
+		double result;
+		
+		double vP3 = Math.pow(v, 3);
+		if (vP3 > E) {
+			result = vP3;
+		} else {
+			result = (((v * 116) - 16.0) / K);
+		}
+		
+		return result;
+	}
+	
+	private static double _calculate_f_lab(double v) {
+		double result;
+		
+		if (v > E) {
+			result = Math.pow(v, (1.0 / 3.0));
+		} else {
+			result = ((K * v) + 16.0) / 116.0;
+		}
+		
+		return result;
 	}
 }

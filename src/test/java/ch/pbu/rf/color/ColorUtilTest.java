@@ -36,4 +36,13 @@ class ColorUtilTest {
 		assertEquals(-105.150, lab.getA(), DELTA);
 		assertEquals(  52.880, lab.getB(), DELTA);
 	}
+	
+	@Test
+	void testCalculateDeltaE2000() {
+		ColorLab color1 = new ColorLab(52.10, 42.18, 20.98);
+		ColorLab color2 = new ColorLab(52.00, 41.00, 25.00);
+		
+		double dE = ColorUtil.calculateDeltaE2000(color1, color2);
+		System.out.println(dE);
+	}
 }
