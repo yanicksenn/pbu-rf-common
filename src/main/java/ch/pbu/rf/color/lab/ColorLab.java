@@ -1,11 +1,13 @@
 package ch.pbu.rf.color.lab;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 
 import ch.pbu.rf.color.Color;
 import ch.pbu.rf.color.ColorType;
@@ -20,20 +22,23 @@ import ch.yanicksenn.metamodel.MetaModel;
 @MetaModel
 public class ColorLab extends Color {
 	
-	@Column(nullable = false)
-	@Min(value = ColorLabValidator.L_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_MIN)
-	@Max(value = ColorLabValidator.L_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_MAX)
-	private final double l;
+	@Column
+	@NotNull(message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_NULL)
+	@DecimalMin(value = ColorLabValidator.L_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_MIN)
+	@DecimalMax(value = ColorLabValidator.L_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_MAX)
+	private final BigDecimal l;
 
-	@Column(nullable = false)
-	@Min(value = ColorLabValidator.A_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_MIN)
-	@Max(value = ColorLabValidator.A_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_MAX)
-	private final double a;
+	@Column
+	@NotNull(message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_NULL)
+	@DecimalMin(value = ColorLabValidator.A_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_MIN)
+	@DecimalMax(value = ColorLabValidator.A_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_MAX)
+	private final BigDecimal a;
 
-	@Column(nullable = false)
-	@Min(value = ColorLabValidator.B_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_MIN)
-	@Max(value = ColorLabValidator.B_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_MAX)
-	private final double b;
+	@Column
+	@NotNull(message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_NULL)
+	@DecimalMin(value = ColorLabValidator.B_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_MIN)
+	@DecimalMax(value = ColorLabValidator.B_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_MAX)
+	private final BigDecimal b;
 	
 	
 	/**
@@ -43,7 +48,7 @@ public class ColorLab extends Color {
 	 * @param a A-value.
 	 * @param b B-value.
 	 */
-	public ColorLab(double l, double a, double b) {
+	public ColorLab(BigDecimal l, BigDecimal a, BigDecimal b) {
 		super(ColorType.LAB);
 		this.l = l;
 		this.a = a;
@@ -51,11 +56,27 @@ public class ColorLab extends Color {
 	}
 	
 	/**
+	 * Constructor with <I>L</I>, <I>a</I> and <I>b</I> value as string.
+	 * 
+	 * @param l L-value.
+	 * @param a A-value.
+	 * @param b B-value.
+	 */
+	public ColorLab(String l, String a, String b) {
+		this(
+			new BigDecimal(l), 
+			new BigDecimal(a), 
+			new BigDecimal(b)
+		);
+	}
+	
+	
+	/**
 	 * Returns the L-value.
 	 * 
 	 * @return L-value.
 	 */
-	public double getL() {
+	public BigDecimal getL() {
 		return l;
 	}
 	
@@ -64,7 +85,7 @@ public class ColorLab extends Color {
 	 * 
 	 * @return a-value.
 	 */
-	public double getA() {
+	public BigDecimal getA() {
 		return a;
 	}
 	
@@ -73,14 +94,15 @@ public class ColorLab extends Color {
 	 * 
 	 * @return b-value.
 	 */
-	public double getB() {
+	public BigDecimal getB() {
 		return b;
 	}
 	
 	
 	@Override
 	public String toString() {
-		return String.format("%s[type: %s, L: %03d, a: %03d, b: %03d]", getClass().getSimpleName(), getType(), l, a, b);
+		return String.format("%s[type: %s, L: %03d, a: %03d, b: %03d]", 
+			getClass().getSimpleName(), getType(), l.doubleValue(), a.doubleValue(), b.doubleValue());
 	}
 
 	

@@ -1,9 +1,11 @@
 package ch.pbu.rf.color.xyz;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
 import ch.pbu.rf.color.Color;
 import ch.pbu.rf.color.ColorType;
@@ -18,14 +20,17 @@ import ch.yanicksenn.metamodel.MetaModel;
 @MetaModel
 public class ColorXYZ extends Color {
 	
-	@Column(nullable = false)
-	private final double x;
+	@Column
+	@NotNull(message = ColorXYZValidator.LABEL_COLOR_XYZ_INVALID_X_NULL)
+	private final BigDecimal x;
 
-	@Column(nullable = false)
-	private final double y;
+	@Column
+	@NotNull(message = ColorXYZValidator.LABEL_COLOR_XYZ_INVALID_Y_NULL)
+	private final BigDecimal y;
 
-	@Column(nullable = false)
-	private final double z;
+	@Column
+	@NotNull(message = ColorXYZValidator.LABEL_COLOR_XYZ_INVALID_Z_NULL)
+	private final BigDecimal z;
 	
 	
 	/**
@@ -35,11 +40,26 @@ public class ColorXYZ extends Color {
 	 * @param y Y-value.
 	 * @param z Z-value.
 	 */
-	public ColorXYZ(double x, double y, double z) {
+	public ColorXYZ(BigDecimal x, BigDecimal y, BigDecimal z) {
 		super(ColorType.XYZ);
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	/**
+	 * Constructor with <I>X</I>, <I>Y</I> and <I>Z</I> value as string.
+	 * 
+	 * @param x X-value.
+	 * @param y Y-value.
+	 * @param z Z-value.
+	 */
+	public ColorXYZ(String x, String y, String z) {
+		this(
+			new BigDecimal(x), 
+			new BigDecimal(y), 
+			new BigDecimal(z)
+		);
 	}
 	
 	/**
@@ -47,7 +67,7 @@ public class ColorXYZ extends Color {
 	 * 
 	 * @return X-value.
 	 */
-	public double getX() {
+	public BigDecimal getX() {
 		return x;
 	}
 	
@@ -56,7 +76,7 @@ public class ColorXYZ extends Color {
 	 * 
 	 * @return Y-value.
 	 */
-	public double getY() {
+	public BigDecimal getY() {
 		return y;
 	}
 	
@@ -65,14 +85,15 @@ public class ColorXYZ extends Color {
 	 * 
 	 * @return Z-value.
 	 */
-	public double getZ() {
+	public BigDecimal getZ() {
 		return z;
 	}
 	
 	
 	@Override
 	public String toString() {
-		return String.format("%s[type: %s, X: %03d, Y: %03d, Z: %03d]", getClass().getSimpleName(), getType(), x, y, z);
+		return String.format("%s[type: %s, X: %03d, Y: %03d, Z: %03d]", 
+			getClass().getSimpleName(), getType(), x.doubleValue(), y.doubleValue(), z.doubleValue());
 	}
 
 	

@@ -19,6 +19,7 @@
 		<version.hibernate.validator>6.0.13.Final</version.hibernate.validator>
 		<version.hibernate.common.annotations>5.1.0.Final</version.hibernate.common.annotations>
 		<version.glassfish.javax.el.version>3.0.1-b10</version.glassfish.javax.el.version>
+		<version.ch.obermuhlner.big-math>2.0.1</version.ch.obermuhlner.big-math>
 		<version.yanicksenn.util>1.0</version.yanicksenn.util>
 	</properties>
 	
@@ -122,6 +123,11 @@
 			<groupId>ch.yanicksenn</groupId>
 			<artifactId>yanicksenn-util</artifactId>
 			<version>${version.yanicksenn.util}</version>
+		</dependency>
+		<dependency>
+		    <groupId>ch.obermuhlner</groupId>
+		    <artifactId>big-math</artifactId>
+		    <version>${version.ch.obermuhlner.big-math}</version>
 		</dependency>
 	</dependencies>
 </project>
