@@ -14,13 +14,11 @@
 		<version.junit.jupiter.engine>5.2.0</version.junit.jupiter.engine>
 		<version.junit.vintage.engine>5.2.0</version.junit.vintage.engine>
 		<version.junit.platform.launcher>1.2.0</version.junit.platform.launcher>
-		<version.validation.api>2.0.1.Final</version.validation.api>
-		<version.hibernate.core>5.4.0.Final</version.hibernate.core>
 		<version.hibernate.validator>6.0.13.Final</version.hibernate.validator>
-		<version.hibernate.common.annotations>5.1.0.Final</version.hibernate.common.annotations>
 		<version.glassfish.javax.el.version>3.0.1-b10</version.glassfish.javax.el.version>
-		<version.ch.obermuhlner.big-math>2.0.1</version.ch.obermuhlner.big-math>
+		<version.validation.api>2.0.1.Final</version.validation.api>
 		<version.yanicksenn.util>1.0</version.yanicksenn.util>
+		<version.ch.obermuhlner.big-math>2.0.1</version.ch.obermuhlner.big-math>
 	</properties>
 	
 	<modelVersion>4.0.0</modelVersion>
@@ -93,6 +91,12 @@
 	        <version>${version.junit.platform.launcher}</version>
 	        <scope>test</scope>
 	    </dependency>
+		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${version.hibernate.validator}</version>
+            <scope>test</scope>
+		</dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
@@ -103,21 +107,6 @@
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 			<version>${version.validation.api}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${version.hibernate.core}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.validator</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>${version.hibernate.validator}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.common</groupId>
-			<artifactId>hibernate-commons-annotations</artifactId>
-			<version>${version.hibernate.common.annotations}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.yanicksenn</groupId>

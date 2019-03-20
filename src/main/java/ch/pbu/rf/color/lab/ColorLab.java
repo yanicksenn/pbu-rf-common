@@ -3,8 +3,6 @@ package ch.pbu.rf.color.lab;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -18,23 +16,19 @@ import ch.yanicksenn.metamodel.MetaModel;
  * 
  * @author Yanick Senn
  */
-@Embeddable
 @MetaModel
 public class ColorLab extends Color {
 	
-	@Column
 	@NotNull(message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_NULL)
 	@DecimalMin(value = ColorLabValidator.L_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_MIN)
 	@DecimalMax(value = ColorLabValidator.L_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_MAX)
 	private final BigDecimal l;
 
-	@Column
 	@NotNull(message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_NULL)
 	@DecimalMin(value = ColorLabValidator.A_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_MIN)
 	@DecimalMax(value = ColorLabValidator.A_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_MAX)
 	private final BigDecimal a;
 
-	@Column
 	@NotNull(message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_NULL)
 	@DecimalMin(value = ColorLabValidator.B_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_MIN)
 	@DecimalMax(value = ColorLabValidator.B_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_MAX)

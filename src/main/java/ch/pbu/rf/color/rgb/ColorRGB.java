@@ -3,8 +3,6 @@ package ch.pbu.rf.color.rgb;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -18,23 +16,19 @@ import ch.yanicksenn.metamodel.MetaModel;
  * 
  * @author Yanick Senn
  */
-@Embeddable
 @MetaModel
 public class ColorRGB extends Color {
 	
-	@Column
 	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_NULL)
 	@DecimalMin(value = ColorRGBValidator.R_MIN, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_MIN)
 	@DecimalMax(value = ColorRGBValidator.R_MAX, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_MAX)
 	private final BigDecimal r;
 
-	@Column
 	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_NULL)
 	@DecimalMin(value = ColorRGBValidator.G_MIN, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_MIN)
 	@DecimalMax(value = ColorRGBValidator.G_MAX, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_MAX)
 	private final BigDecimal g;
 
-	@Column
 	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_NULL)
 	@DecimalMin(value = ColorRGBValidator.B_MIN, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_MIN)
 	@DecimalMax(value = ColorRGBValidator.B_MAX, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_MAX)

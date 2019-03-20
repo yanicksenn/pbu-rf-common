@@ -1,14 +1,12 @@
 package ch.pbu.rf.pot;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
+import java.io.Serializable;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import ch.pbu.rf.AbstractEntity;
 import ch.pbu.rf.color.Color;
 import ch.pbu.rf.color.lab.ColorLab;
 import ch.yanicksenn.metamodel.MetaModel;
@@ -18,21 +16,17 @@ import ch.yanicksenn.metamodel.MetaModel;
  * 
  * @author Yanick Senn
  */
-@Entity
 @MetaModel
-public class Pot extends AbstractEntity<Long> {
+public class Pot implements Serializable {
 	
-	@Column(nullable = false)
 	@NotNull(message = PotValidator.LABEL_POT_INVALID_NAME_NULL)
 	@NotEmpty(message = PotValidator.LABEL_POT_INVALID_NAME_EMPTY)
 	private String name;
 
-	@Embedded
 	@NotNull(message = PotValidator.LABEL_POT_INVALID_COLOR_NULL)
 	@Valid
 	private ColorLab color;
 	
-	@Column(nullable = false)
 	@Min(value = PotValidator.AMOUNT_IN_LITER_MIN, message = PotValidator.LABEL_POT_INVALID_AMOUNT_IN_LITER_MIN)
 	private long amountInMilliliter;
 	

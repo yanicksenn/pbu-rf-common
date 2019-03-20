@@ -3,8 +3,6 @@ package ch.pbu.rf.color.xyz;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import ch.pbu.rf.color.Color;
@@ -16,19 +14,15 @@ import ch.yanicksenn.metamodel.MetaModel;
  * 
  * @author Yanick Senn
  */
-@Embeddable
 @MetaModel
 public class ColorXYZ extends Color {
 	
-	@Column
 	@NotNull(message = ColorXYZValidator.LABEL_COLOR_XYZ_INVALID_X_NULL)
 	private final BigDecimal x;
 
-	@Column
 	@NotNull(message = ColorXYZValidator.LABEL_COLOR_XYZ_INVALID_Y_NULL)
 	private final BigDecimal y;
 
-	@Column
 	@NotNull(message = ColorXYZValidator.LABEL_COLOR_XYZ_INVALID_Z_NULL)
 	private final BigDecimal z;
 	

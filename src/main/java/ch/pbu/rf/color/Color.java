@@ -1,5 +1,6 @@
 package ch.pbu.rf.color;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -7,7 +8,8 @@ import java.util.Objects;
  * 
  * @author Yanick Senn
  */
-public abstract class Color {
+public abstract class Color implements Serializable {
+	
 	private final ColorType type;
 	
 	
