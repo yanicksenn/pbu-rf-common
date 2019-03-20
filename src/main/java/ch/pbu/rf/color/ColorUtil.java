@@ -16,7 +16,6 @@ import ch.pbu.rf.illuminant.Illuminant;
  * @author Yanick Senn
  */
 public class ColorUtil {
-
 	public static final MathContext MC = new MathContext(100, RoundingMode.HALF_UP);
 	public static final BigDecimal E = bd(216, MC).divide(bd(24389, MC), MC);
 	public static final BigDecimal K = bd(24389, MC).divide(bd(27, MC), MC);
@@ -38,9 +37,9 @@ public class ColorUtil {
 	public static ColorXYZ getReferenceWhite(Illuminant illuminant) {
 		Objects.requireNonNull(illuminant, "illuminant is not specified");
 
-		BigDecimal ix = bd(illuminant.getX(), MC);
-		BigDecimal iy = bd(illuminant.getY(), MC);
-		BigDecimal iz = bd(illuminant.getZ(), MC);
+		BigDecimal ix = illuminant.getX();
+		BigDecimal iy = illuminant.getY();
+		BigDecimal iz = illuminant.getZ();
 
 		BigDecimal y = BigDecimal.ONE;
 		BigDecimal x = ix.multiply(y, MC).divide(iy, MC);

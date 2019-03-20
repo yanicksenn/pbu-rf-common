@@ -1,6 +1,8 @@
 
 package ch.pbu.rf.illuminant;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Objects;
 
 /**
@@ -12,8 +14,9 @@ public class Illuminant {
 	private final String name;
 	private final int year;
 	private final int degrees;
-	private final double x;
-	private final double y;
+	private final BigDecimal x;
+	private final BigDecimal y;
+	private final MathContext mc;
 	private final int cct;
 	
 	/**
@@ -26,12 +29,13 @@ public class Illuminant {
 	 * @param y Y-value.
 	 * @param cct CCT.
 	 */
-	public Illuminant(String name, int year, int degrees, double x, double y, int cct) {
+	public Illuminant(String name, int year, int degrees, BigDecimal x, BigDecimal y, MathContext mc, int cct) {
 		this.name = Objects.requireNonNull(name, "name is not specified");
 		this.year = year;
 		this.degrees = degrees;
-		this.x = x;
-		this.y = y;
+		this.x = Objects.requireNonNull(x, "x is not specified");
+		this.y = Objects.requireNonNull(y, "y is not specified");
+		this.mc = Objects.requireNonNull(mc, "mc is not specified");
 		this.cct = cct;
 	}
 	
@@ -67,7 +71,7 @@ public class Illuminant {
 	 * 
 	 * @return X-value.
 	 */
-	public double getX() {
+	public BigDecimal getX() {
 		return x;
 	}
 	
@@ -76,8 +80,17 @@ public class Illuminant {
 	 * 
 	 * @return Y-value.
 	 */
-	public double getY() {
+	public BigDecimal getY() {
 		return y;
+	}
+	
+	/**
+	 * Returns the math-context.
+	 * 
+	 * @return Math-context.
+	 */
+	public MathContext getMathContext() {
+		return mc;
 	}
 	
 	/**
@@ -85,8 +98,8 @@ public class Illuminant {
 	 * 
 	 * @return Z-value.
 	 */
-	public double getZ() {
-		return 1 - x - y;
+	public BigDecimal getZ() {
+		return BigDecimal.ONE.subtract(x, mc).subtract(y, mc);
 	}
 	
 	/**
@@ -107,7 +120,7 @@ public class Illuminant {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, year, degrees, x, y, cct);
+		return Objects.hash(name, year, degrees, x, y, mc, cct);
 	}
 	
 
@@ -131,8 +144,9 @@ public class Illuminant {
 			Objects.equals(this.name, other.name) &&
 			Objects.equals(this.year, other.year) &&
 			Objects.equals(this.degrees, other.degrees) &&
-			Objects.equals(this.x, other.x) &&
-			Objects.equals(this.y, other.y) &&
+			this.x.compareTo(other.x) == 0 &&
+			this.y.compareTo(other.y) == 0 &&
+			Objects.equals(this.mc, other.mc) &&
 			Objects.equals(this.cct, other.cct);
 	}
 }
