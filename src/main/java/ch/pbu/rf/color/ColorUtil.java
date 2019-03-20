@@ -126,39 +126,27 @@ public class ColorUtil {
 		BigDecimal a2 = color2.getA();
 		BigDecimal b2 = color2.getB();
 		
-		BigDecimal c1 = BigDecimalMath.sqrt(a1.pow(2, MC).add(b1.pow(2)), MC);
-		BigDecimal c2 = BigDecimalMath.sqrt(a2.pow(2, MC).add(b2.pow(2)), MC);
+		BigDecimal c1 = calculateC(a1, b1, MC);
+		BigDecimal c2 = calculateC(a2, b2, MC);
 
-		BigDecimal g1 = c1.add(c2, MC).divide(bd(2, MC), MC).pow(7, MC);
-		BigDecimal g2 = c1.add(c2, MC).divide(bd(2, MC), MC).pow(7, MC);
-		BigDecimal g3 = bd(25, MC).pow(7, MC);
-		BigDecimal g = BigDecimal.ONE.subtract(BigDecimalMath.sqrt(g1.divide(g2.add(g3, MC), MC), MC), MC).divide(bd(2, MC), MC);
+		BigDecimal g = calculateG(c1, c2, MC);
 
 		BigDecimal a1_ = BigDecimal.ONE.add(g, MC).multiply(a1, MC);
 		BigDecimal b1_ = b1; 
 		BigDecimal c1_ = BigDecimalMath.sqrt(a1_.pow(2, MC).add(b1_.pow(2)), MC);
 
-		BigDecimal h1_ = toDegrees(BigDecimalMath.atan2(b1, a1_, MC), MC);
-		if (h1_.compareTo(BigDecimal.ZERO) < 0) {
-			h1_ = h1_.add(bd(360, MC), MC);
-		}
+		BigDecimal h1_ = calculateH(a1_, b1, MC);
 		
 		BigDecimal a2_ = BigDecimal.ONE.add(g, MC).multiply(a2, MC);
 		BigDecimal b2_ = b2; 
 		BigDecimal c2_ = BigDecimalMath.sqrt(a2_.pow(2, MC).add(b2_.pow(2)), MC);
 
-		BigDecimal h2_ = toDegrees(BigDecimalMath.atan2(b2, a2_, MC), MC);
-		if (h2_.compareTo(BigDecimal.ZERO) < 0) {
-			h2_ = h2_.add(bd(360, MC), MC);
-		}
+		BigDecimal h2_ = calculateH(a2_, b2, MC);
 		
-		BigDecimal dH = h2_.subtract(h1_, MC).abs(MC);
-		if (dH.compareTo(bd(180, MC)) > 0) {
-			dH = bd(360, MC).subtract(dH);
-		}
+		BigDecimal dH = calculateDeltaH(h1_, h2_, MC);
 
-		BigDecimal meanL = l1.add(l2, MC).divide(bd(2, MC), MC);
-		BigDecimal meanC = c1_.add(c2_, MC).divide(bd(2, MC), MC);
+		BigDecimal meanL = calculateMeanL(l1, l2, MC);
+		BigDecimal meanC = calculateMeanC(c1_, c2_, MC);
 		BigDecimal meanH = null;
 		if (h1_.subtract(h2_, MC).abs(MC).compareTo(bd(180, MC)) <= 0) {
 			meanH = h1_.add(h2_, MC).divide(bd(2, MC), MC);
@@ -188,7 +176,6 @@ public class ColorUtil {
 		BigDecimal dq = bd(30, MC).multiply(BigDecimalMath.exp(dq2, MC), MC);
 
 		BigDecimal RC = bd(2, MC).multiply(BigDecimalMath.sqrt(meanC.pow(7, MC).divide(meanC.pow(7, MC).add(bd(25, MC).pow(7, MC)), MC), MC), MC);
-//		BigDecimal RT = bd(-1, MC).multiply(RC, MC).multiply(toDegrees(BigDecimalMath.sin(toRadians(bd(2, MC).multiply(dq, MC), MC), MC), MC));
 		BigDecimal RT = bd(-1, MC).multiply(RC, MC).multiply(BigDecimalMath.sin(bd(2, MC).multiply(toRadians(dq, MC), MC), MC), MC);
 				
 		BigDecimal KL = BigDecimal.ONE;
@@ -203,6 +190,87 @@ public class ColorUtil {
 		BigDecimal dE = BigDecimalMath.sqrt(dE1.add(dE2, MC).add(dE3, MC).add(RT.multiply(dE4, MC).multiply(dE5, MC), MC), MC);
 		
 		return dE;
+	}
+	
+	public static BigDecimal calculateC(BigDecimal a, BigDecimal b, MathContext mc) {
+		Objects.requireNonNull(a, "a is not specified");
+		Objects.requireNonNull(b, "b is not specified");
+		Objects.requireNonNull(mc, "mc is not specified");
+		
+		BigDecimal result = BigDecimalMath.sqrt(a.pow(2, mc).add(b.pow(2, mc), mc), mc);
+		return result;
+	}
+	
+	public static BigDecimal calculateG(BigDecimal c1, BigDecimal c2, MathContext mc) {
+		Objects.requireNonNull(c1, "c1 is not specified");
+		Objects.requireNonNull(c2, "c2 is not specified");
+		Objects.requireNonNull(mc, "mc is not specified");
+
+		BigDecimal g1 = c1.add(c2, mc).divide(bd(2, mc), mc).pow(7, mc);
+		BigDecimal g2 = c1.add(c2, mc).divide(bd(2, mc), mc).pow(7, mc);
+		BigDecimal g3 = bd(25, mc).pow(7, mc);
+		
+		BigDecimal result = BigDecimal.ONE.subtract(BigDecimalMath.sqrt(g1.divide(g2.add(g3, mc), mc), mc), mc).divide(bd(2, mc), mc);
+		return result;
+	}
+
+	public static BigDecimal calculateH(BigDecimal a, BigDecimal b, MathContext mc) {
+		Objects.requireNonNull(a, "a is not specified");
+		Objects.requireNonNull(b, "b is not specified");
+		Objects.requireNonNull(mc, "mc is not specified");
+
+		BigDecimal result = toDegrees(BigDecimalMath.atan2(b, a, mc), mc);
+		if (result.compareTo(BigDecimal.ZERO) < 0) {
+			result = result.add(bd(360, mc), mc);
+		}
+		
+		return result;
+	}
+	
+	public static BigDecimal calculateDeltaH(BigDecimal h1, BigDecimal h2, MathContext mc) {
+		Objects.requireNonNull(h1, "h1 is not specified");
+		Objects.requireNonNull(h2, "h2 is not specified");
+		Objects.requireNonNull(mc, "mc is not specified");
+
+		BigDecimal result = h2.subtract(h1, mc).abs(mc);
+		if (result.compareTo(bd(180, mc)) > 0) {
+			result = bd(360, mc).subtract(result, mc);
+		}
+		
+		return result;
+	}
+
+	public static BigDecimal calculateMeanL(BigDecimal a, BigDecimal b, MathContext mc) {
+		Objects.requireNonNull(a, "a is not specified");
+		Objects.requireNonNull(b, "b is not specified");
+		Objects.requireNonNull(mc, "mc is not specified");
+
+		BigDecimal result = a.add(b, mc).divide(bd(2, mc), mc);
+		return result;
+	}
+
+	public static BigDecimal calculateMeanC(BigDecimal a, BigDecimal b, MathContext mc) {
+		Objects.requireNonNull(a, "a is not specified");
+		Objects.requireNonNull(b, "b is not specified");
+		Objects.requireNonNull(mc, "mc is not specified");
+
+		BigDecimal result = a.add(b, mc).divide(bd(2, mc), mc);
+		return result;
+	}
+
+	public static BigDecimal calculateMeanH(BigDecimal h1, BigDecimal h2, MathContext mc) {
+		Objects.requireNonNull(h1, "h1 is not specified");
+		Objects.requireNonNull(h2, "h2 is not specified");
+		Objects.requireNonNull(mc, "mc is not specified");
+
+		BigDecimal result = null;
+		if (h1.subtract(h2, MC).abs(MC).compareTo(bd(180, MC)) <= 0) {
+			result = h1.add(h2, MC).divide(bd(2, MC), MC);
+		} else {
+			result = h1.add(h2, MC).subtract(bd(360, MC), MC).divide(bd(2, MC), MC);
+		}
+		
+		return result;
 	}
 
 	private static BigDecimal _calculate_f_xyz(BigDecimal val) {
