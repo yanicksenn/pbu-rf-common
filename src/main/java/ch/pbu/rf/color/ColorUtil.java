@@ -6,6 +6,8 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
+import ch.pbu.rf.color.deltae.DeltaE1976CalculationException;
+import ch.pbu.rf.color.deltae.DeltaE2000CalculationException;
 import ch.pbu.rf.color.lab.ColorLab;
 import ch.pbu.rf.color.rgb.ColorRGB;
 import ch.pbu.rf.color.xyz.ColorXYZ;
@@ -34,6 +36,8 @@ public class ColorUtil {
 	 * @param illuminant Illuminant.
 	 * 
 	 * @return Reference white as XYZ.
+	 * 
+	 * @throws NullPointerException If illuminant is not specified.
 	 */
 	public static ColorXYZ getReferenceWhite(Illuminant illuminant) {
 		Objects.requireNonNull(illuminant, "illuminant is not specified");
@@ -56,6 +60,9 @@ public class ColorUtil {
 	 * @param illuminant Illuminant.
 	 * 
 	 * @return XYZ-Color.
+	 * 
+	 * @throws NullPointerException If color is not specified.
+	 * @throws NullPointerException If illuminant is not specified.
 	 */
 	public static ColorXYZ convertToXYZ(ColorLab color, Illuminant illuminant) {
 		Objects.requireNonNull(color, "color is not specified");
@@ -89,6 +96,9 @@ public class ColorUtil {
 	 * @param illuminant Illuminant.
 	 * 
 	 * @return XYZ-Color.
+	 * 
+	 * @throws NullPointerException If color is not specified.
+	 * @throws NullPointerException If illuminant is not specified.
 	 */
 	public static ColorXYZ convertToXYZ(ColorRGB color, Illuminant illuminant) {
 		Objects.requireNonNull(color, "color is not specified");
@@ -106,7 +116,7 @@ public class ColorUtil {
 			{ null, null, null }
 		};
 		
-		return referenceWhite;
+		return null;
 	}
 
 	/**
@@ -116,6 +126,9 @@ public class ColorUtil {
 	 * @param illuminant Illuminant.
 	 * 
 	 * @return Lab-Color.
+	 * 
+	 * @throws NullPointerException If color is not specified.
+	 * @throws NullPointerException If illuminant is not specified.
 	 */
 	public static ColorLab convertToLab(ColorXYZ color, Illuminant illuminant) {
 		Objects.requireNonNull(color, "color is not specified");
@@ -142,6 +155,56 @@ public class ColorUtil {
 		return new ColorLab(l, a, b);
 	}
 
+	/**
+	 * Calculates the delta E1976 for the given two colors.
+	 * 
+	 * @param color1 First color.
+	 * @param color2 Second color.
+	 * 
+	 * @return Delta E1976 for the given two colors.
+	 * 
+	 * @throws NullPointerException If color1 is not specified.
+	 * @throws NullPointerException If color2 is not specified.
+	 * @throws DeltaE1976CalculationException If it is not possible to calculate the delta E1976.
+	 */
+	public static BigDecimal calculateDeltaE1976(ColorLab color1, ColorLab color2) throws NullPointerException, DeltaE1976CalculationException {
+		Objects.requireNonNull(color1, "color1 is not specified");
+		Objects.requireNonNull(color2, "color2 is not specified");
+		
+		try {
+			BigDecimal color1L = replaceZeroWithNearlyZero(color1.getL(), MC);
+			BigDecimal color1a = replaceZeroWithNearlyZero(color1.getA(), MC);
+			BigDecimal color1b = replaceZeroWithNearlyZero(color1.getB(), MC);
+
+			BigDecimal color2L = replaceZeroWithNearlyZero(color2.getL(), MC);
+			BigDecimal color2a = replaceZeroWithNearlyZero(color2.getA(), MC);
+			BigDecimal color2b = replaceZeroWithNearlyZero(color2.getB(), MC);
+
+			BigDecimal result = calculateDeltaE1976(color1L, color1a, color1b, color2L, color2a, color2b, MC);
+			return result;
+			
+		} catch (ArithmeticException e) {
+			throw new DeltaE1976CalculationException(color1, color2, e);
+		}
+	}
+	
+	public static BigDecimal calculateDeltaE1976(BigDecimal l1, BigDecimal a1, BigDecimal b1, BigDecimal l2, BigDecimal a2, BigDecimal b2, MathContext mc) {
+		Objects.requireNonNull(l1, "l1 is not specified");
+		Objects.requireNonNull(a1, "a1 is not specified");
+		Objects.requireNonNull(b1, "b1 is not specified");
+		Objects.requireNonNull(l2, "l2 is not specified");
+		Objects.requireNonNull(a2, "a2 is not specified");
+		Objects.requireNonNull(b2, "b2 is not specified");
+		Objects.requireNonNull(mc, "mc is not specified");
+		
+		BigDecimal step1 = l1.subtract(l2, mc).pow(2, mc);
+		BigDecimal step2 = a1.subtract(a2, mc).pow(2, mc);
+		BigDecimal step3 = b1.subtract(b2, mc).pow(2, mc);
+		
+		BigDecimal result = BigDecimalMath.sqrt(step1.add(step2).add(step3), mc);
+		return result;
+	}
+	
 	/**
 	 * Calculates the delta E2000 for the given two colors.
 	 * 

@@ -1,4 +1,4 @@
-package ch.pbu.rf.color;
+package ch.pbu.rf.color.deltae;
 
 import ch.pbu.rf.color.lab.ColorLab;
 
@@ -7,9 +7,7 @@ import ch.pbu.rf.color.lab.ColorLab;
  * 
  * @author Yanick Senn
  */
-public class DeltaE2000CalculationException extends CalculationException {
-	private final ColorLab color1;
-	private final ColorLab color2;
+public class DeltaE2000CalculationException extends DeltaECalculationException {
 	
 	/**
 	 * Constructor with the first and the second color.
@@ -18,9 +16,7 @@ public class DeltaE2000CalculationException extends CalculationException {
 	 * @param color2 Second color.
 	 */
 	public DeltaE2000CalculationException(ColorLab color1, ColorLab color2) {
-		super();
-		this.color1 = color1;
-		this.color2 = color2;
+		super(color1, color2);
 	}
 	
 	/**
@@ -31,9 +27,7 @@ public class DeltaE2000CalculationException extends CalculationException {
 	 * @param message Message.
 	 */
 	public DeltaE2000CalculationException(ColorLab color1, ColorLab color2, String message) {
-		super(message);
-		this.color1 = color1;
-		this.color2 = color2;
+		super(color1, color2, message);
 	}
 	
 	/**
@@ -44,9 +38,7 @@ public class DeltaE2000CalculationException extends CalculationException {
 	 * @param cause Cause.
 	 */
 	public DeltaE2000CalculationException(ColorLab color1, ColorLab color2, Throwable cause) {
-		super(cause);
-		this.color1 = color1;
-		this.color2 = color2;
+		super(color1, color2, cause);
 	}
 	
 	/**
@@ -58,26 +50,6 @@ public class DeltaE2000CalculationException extends CalculationException {
 	 * @param cause Cause.
 	 */
 	public DeltaE2000CalculationException(ColorLab color1, ColorLab color2, String message, Throwable cause) {
-		super(message, cause);
-		this.color1 = color1;
-		this.color2 = color2;
-	}
-	
-	/**
-	 * Returns the first color.
-	 * 
-	 * @return First color.
-	 */
-	public ColorLab getColor1() {
-		return color1;
-	}
-	
-	/**
-	 * Returns the second color.
-	 * 
-	 * @return Second color.
-	 */
-	public ColorLab getColor2() {
-		return color2;
+		super(color1, color2, message, cause);
 	}
 }
