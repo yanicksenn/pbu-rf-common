@@ -85,21 +85,21 @@ public class Illuminant {
 	}
 	
 	/**
-	 * Returns the math-context.
-	 * 
-	 * @return Math-context.
-	 */
-	public MathContext getMathContext() {
-		return mc;
-	}
-	
-	/**
 	 * Returns the z-value.
 	 * 
 	 * @return Z-value.
 	 */
 	public BigDecimal getZ() {
 		return BigDecimal.ONE.subtract(x, mc).subtract(y, mc);
+	}
+	
+	/**
+	 * Returns the math-context.
+	 * 
+	 * @return Math-context.
+	 */
+	public MathContext getMathContext() {
+		return mc;
 	}
 	
 	/**
