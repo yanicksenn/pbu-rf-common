@@ -65,16 +65,16 @@ public class MathUtil {
 	
 	/**
 	 * 
-	 * @param matrice
+	 * @param matrix
 	 * @param mc
 	 * @return
 	 */
-	public static BigDecimal[][] getInverse(BigDecimal[][] matrice, MathContext mc) {
-		Objects.requireNonNull(matrice, "matrice is not specified");
+	public static BigDecimal[][] calculateInverse(BigDecimal[][] matrix, MathContext mc) {
+		Objects.requireNonNull(matrix, "matrix is not specified");
 		Objects.requireNonNull(mc, "mc is not specified");
 		
-		if (!isValidMatrix(matrice)) {
-			throw new IllegalArgumentException("matrice is not valid");
+		if (!isValidMatrix(matrix)) {
+			throw new IllegalArgumentException("matrix is not valid");
 		}
 
 		return null;
@@ -86,8 +86,10 @@ public class MathUtil {
 	 * @param n Length and height.
 	 * 
 	 * @return Identity matrix.
+	 * 
+	 * @throws IllegalArgumentException If n is negative or zero.
 	 */
-	public static BigDecimal[][] getIdentityMatrix(int n) {
+	public static BigDecimal[][] calculateIdentityMatrix(int n) {
 		if (n < 1) {
 			throw new IllegalArgumentException("n should not be negative");
 		}
@@ -113,6 +115,21 @@ public class MathUtil {
 	}
 	
 	/**
+	 * 
+	 * @param matrix
+	 * @return
+	 */
+	public static int getColumnsOfMatrix(BigDecimal[][] matrix) {
+		Objects.requireNonNull(matrix, "matrix is not specified");
+		
+		if (!isValidMatrix(matrix)) {
+			throw new IllegalArgumentException("matrix is not valid");
+		}
+		
+		return 0;
+	}
+	
+	/**
 	 * Returns <code>true</code> if the given matrix does not contain any 
 	 * <code>null</code> values.
 	 * 
@@ -120,6 +137,8 @@ public class MathUtil {
 	 * 
 	 * @return <code>true</code> if the given matrix does not contain any 
 	 * <code>null</code> values. Returns <code>false</code> otherwise.
+	 * 
+	 * @throws NullPointerException If matrix is not specified.
 	 */
 	public static boolean isValidMatrix(BigDecimal[][] matrix) {
 		Objects.requireNonNull(matrix, "matrix is not specified");
@@ -165,6 +184,9 @@ public class MathUtil {
 	 * @param mc Math-Context.
 	 * 
 	 * @return A number close to zero.
+	 * 
+	 * @throws NullPointerException If val is not specified.
+	 * @throws NullPointerException If mc is not specified.
 	 */
 	public static BigDecimal replaceZeroWithNearlyZero(BigDecimal val, MathContext mc) {
 		Objects.requireNonNull(val, "val is not specified");

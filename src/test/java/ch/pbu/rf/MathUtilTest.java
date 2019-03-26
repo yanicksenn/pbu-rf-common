@@ -63,6 +63,15 @@ class MathUtilTest {
 		Assertions.assertEquals(1, value.compareTo(BigDecimal.ZERO));
 		Assertions.assertEquals(-1, value.compareTo(BigDecimal.ONE));
 	}
+	
+	@Test
+	@DisplayName(value = "Test: calculateIdentityMatrix(int)")
+	void testCalculateIdentityMatrix() {
+		Assertions.assertThrows(IllegalArgumentException.class, () -> MathUtil.calculateIdentityMatrix(-1));
+		Assertions.assertThrows(IllegalArgumentException.class, () -> MathUtil.calculateIdentityMatrix(0));
+		
+		MathUtil.calculateIdentityMatrix(1);
+	}
 
 	@Test
 	@DisplayName(value = "Test: isValidMatrix(BigDecimal[][])")
@@ -72,23 +81,38 @@ class MathUtilTest {
 		BigDecimal[][] matrix1 = new BigDecimal[][] {
 			null, 
 			null, 
-			null
-		};
+			null };
 		Assertions.assertEquals(false, MathUtil.isValidMatrix(matrix1));
-
+		
 		BigDecimal[][] matrix2 = new BigDecimal[][] {
 			{ null, null, null }, 
 			{ null, null, null }, 
-			{ null, null, null }
-		};
+			{ null, null, null } };
 		Assertions.assertEquals(false, MathUtil.isValidMatrix(matrix2));
-
+		
 		BigDecimal[][] matrix3 = new BigDecimal[][] {
+			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), null },
+			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), MathUtil.bd(1, MC) }, 
+			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), MathUtil.bd(1, MC) } };
+		Assertions.assertEquals(false, MathUtil.isValidMatrix(matrix3));
+		
+		BigDecimal[][] matrix4 = new BigDecimal[][] {
+			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), MathUtil.bd(1, MC) },
+			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), null }, 
+			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), MathUtil.bd(1, MC) } };
+		Assertions.assertEquals(false, MathUtil.isValidMatrix(matrix4));
+
+		BigDecimal[][] matrix5 = new BigDecimal[][] {
 			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), MathUtil.bd(1, MC) },
 			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), MathUtil.bd(1, MC) }, 
-			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), MathUtil.bd(1, MC) }
-		};
-		Assertions.assertEquals(false, MathUtil.isValidMatrix(matrix3));
+			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), null } };
+		Assertions.assertEquals(false, MathUtil.isValidMatrix(matrix5));
+
+		BigDecimal[][] matrix6 = new BigDecimal[][] {
+			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), MathUtil.bd(1, MC) },
+			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), MathUtil.bd(1, MC) }, 
+			{ MathUtil.bd(1, MC), MathUtil.bd(1, MC), MathUtil.bd(1, MC) } };
+		Assertions.assertEquals(true, MathUtil.isValidMatrix(matrix6));
 	}
 
 }
