@@ -117,10 +117,10 @@ public class ColorLab extends Color {
 		}
 		
 		ColorLab other = (ColorLab) obj;
-		
+
 		return 
-			Objects.equals(this.l, other.l) &&
-			Objects.equals(this.a, other.a) &&
-			Objects.equals(this.b, other.b);
+			this.l.compareTo(other.l) == 0 &&
+			this.a.compareTo(other.a) == 0 &&
+			this.b.compareTo(other.b) == 0;
 	}
 }

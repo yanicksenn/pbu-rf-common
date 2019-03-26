@@ -114,8 +114,8 @@ public class ColorXYZ extends Color {
 		ColorXYZ other = (ColorXYZ) obj;
 		
 		return 
-			Objects.equals(this.x, other.x) &&
-			Objects.equals(this.y, other.y) &&
-			Objects.equals(this.z, other.z);
+			this.x.compareTo(other.x) == 0 &&
+			this.y.compareTo(other.y) == 0 &&
+			this.z.compareTo(other.z) == 0;
 	}
 }

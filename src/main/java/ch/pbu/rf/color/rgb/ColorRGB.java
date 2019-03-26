@@ -123,8 +123,8 @@ public class ColorRGB extends Color {
 		ColorRGB other = (ColorRGB) obj;
 		
 		return 
-			Objects.equals(this.r, other.r) &&
-			Objects.equals(this.g, other.g) &&
-			Objects.equals(this.b, other.b);
+			this.r.compareTo(other.r) == 0 &&
+			this.g.compareTo(other.g) == 0 &&
+			this.b.compareTo(other.b) == 0;
 	}
 }

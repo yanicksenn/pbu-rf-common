@@ -2,10 +2,10 @@ package ch.pbu.rf.color;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.Objects;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
+import ch.pbu.rf.RF;
 import ch.pbu.rf.color.deltae.DeltaE1976CalculationException;
 import ch.pbu.rf.color.deltae.DeltaE2000CalculationException;
 import ch.pbu.rf.color.lab.ColorLab;
@@ -19,7 +19,7 @@ import ch.pbu.rf.illuminant.Illuminant;
  * @author Yanick Senn
  */
 public class ColorUtil {
-	public static final MathContext MC = new MathContext(100, RoundingMode.HALF_UP);
+	public static final MathContext MC = RF.MC;
 	public static final BigDecimal E = bd(216, MC).divide(bd(24389, MC), MC);
 	public static final BigDecimal K = bd(24389, MC).divide(bd(27, MC), MC);
 
@@ -142,7 +142,6 @@ public class ColorUtil {
 		BigDecimal rx = rw.getX();
 		BigDecimal ry = rw.getY();
 		BigDecimal rz = rw.getZ();
-
 
 		BigDecimal fx = _calculate_f_lab(x.divide(rx, MC), MC);
 		BigDecimal fy = _calculate_f_lab(y.divide(ry, MC), MC);

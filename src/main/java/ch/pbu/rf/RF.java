@@ -2,11 +2,13 @@ package ch.pbu.rf;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import ch.pbu.rf.color.ColorUtil;
+import ch.pbu.rf.color.rgb.ChromaticityCoordinate;
 import ch.pbu.rf.illuminant.Illuminant;
 
 /**
@@ -15,7 +17,7 @@ import ch.pbu.rf.illuminant.Illuminant;
  * @author Yanick Senn
  */
 public final class RF {
-	public static final MathContext MC = ColorUtil.MC;
+	public static final MathContext MC = new MathContext(100, RoundingMode.HALF_UP);
 	
 	/**
 	 * Private constructor.
@@ -25,10 +27,9 @@ public final class RF {
 	}
 	
 	/**
-	 * Represents the CIE 1931
+	 * Represents the CIE 1931.
 	 * 
 	 * @author Yanick Senn
-	 *
 	 */
 	public static final class CIE1931 {
 		//                             Name	                          X        Y        CCT
@@ -102,7 +103,7 @@ public final class RF {
 	
 	
 	/**
-	 * Represents the CIE 1964
+	 * Represents the CIE 1964.
 	 * 
 	 * @author Yanick Senn
 	 */
@@ -172,6 +173,41 @@ public final class RF {
 		 * Private constructor.
 		 */
 		private CIE1964() {
+			throw new AssertionError();
+		}
+	}
+	
+
+	/**
+	 * Represents the RGB.
+	 * 
+	 * @author Yanick Senn
+	 */
+	public static final class RGB {
+
+		/**
+		 * Represents the chromaticity-coordinates.
+		 * 
+		 * @author Yanick Senn
+		 */
+		public static final class CC {
+			public static final ChromaticityCoordinate R = new ChromaticityCoordinate("0.64", "0.33");
+			public static final ChromaticityCoordinate G = new ChromaticityCoordinate("0.30", "0.60");
+			public static final ChromaticityCoordinate B = new ChromaticityCoordinate("0.15", "0.06");
+			
+			/**
+			 * Private constructor.
+			 */
+			private CC() {
+				throw new AssertionError();
+			}
+			
+		}
+		
+		/**
+		 * Private constructor.
+		 */
+		private RGB() {
 			throw new AssertionError();
 		}
 	}
