@@ -15,7 +15,7 @@ class ColorRGBTest {
 	
 	@Test
 	@DisplayName(value = "Test: ColorRGB(String, String, String)")
-	void test() {
+	void testConstructor() {
 		
 		// Positive-Tests
 		Testing.assertValid(new ColorRGB(ColorRGBValidator.R_MIN, ColorRGBValidator.G_MIN, ColorRGBValidator.B_MIN));

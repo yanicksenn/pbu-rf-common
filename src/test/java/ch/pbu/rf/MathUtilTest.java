@@ -2,12 +2,12 @@ package ch.pbu.rf;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import ch.pbu.rf.color.ColorUtil;
 import ch.yanicksenn.testing.Testing;
 
 /**
@@ -17,7 +17,7 @@ import ch.yanicksenn.testing.Testing;
  */
 @DisplayName(value = "Test: MathUtil")
 class MathUtilTest {
-	private static final MathContext MC = ColorUtil.MC;
+	private static final MathContext MC = new MathContext(100, RoundingMode.HALF_UP);
 	private static final BigDecimal DELTA = new BigDecimal("0.001");
 
 	@Test

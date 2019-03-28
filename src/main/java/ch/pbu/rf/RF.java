@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ch.pbu.rf.color.ColorUtil;
-import ch.pbu.rf.color.rgb.ChromaticityCoordinate;
+import ch.pbu.rf.color.rgb.ChromaticityCoordinateTest;
 import ch.pbu.rf.illuminant.Illuminant;
 
 /**
@@ -191,9 +191,9 @@ public final class RF {
 		 * @author Yanick Senn
 		 */
 		public static final class CC {
-			public static final ChromaticityCoordinate R = new ChromaticityCoordinate("0.64", "0.33");
-			public static final ChromaticityCoordinate G = new ChromaticityCoordinate("0.30", "0.60");
-			public static final ChromaticityCoordinate B = new ChromaticityCoordinate("0.15", "0.06");
+			public static final ChromaticityCoordinateTest R = new ChromaticityCoordinateTest("0.64", "0.33");
+			public static final ChromaticityCoordinateTest G = new ChromaticityCoordinateTest("0.30", "0.60");
+			public static final ChromaticityCoordinateTest B = new ChromaticityCoordinateTest("0.15", "0.06");
 			
 			/**
 			 * Private constructor.

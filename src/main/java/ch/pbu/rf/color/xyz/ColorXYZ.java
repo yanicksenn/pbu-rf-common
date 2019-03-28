@@ -18,21 +18,21 @@ import ch.yanicksenn.metamodel.MetaModel;
 public class ColorXYZ extends Color {
 	
 	@NotNull(message = ColorXYZValidator.LABEL_COLOR_XYZ_INVALID_X_NULL)
-	private final BigDecimal x;
+	private BigDecimal x;
 
 	@NotNull(message = ColorXYZValidator.LABEL_COLOR_XYZ_INVALID_Y_NULL)
-	private final BigDecimal y;
+	private BigDecimal y;
 
 	@NotNull(message = ColorXYZValidator.LABEL_COLOR_XYZ_INVALID_Z_NULL)
-	private final BigDecimal z;
+	private BigDecimal z;
 	
 	
 	/**
 	 * Constructor with <I>X</I>, <I>Y</I> and <I>Z</I> value.
 	 * 
-	 * @param x X-value.
-	 * @param y Y-value.
-	 * @param z Z-value.
+	 * @param x X value.
+	 * @param y Y value.
+	 * @param z Z value.
 	 */
 	public ColorXYZ(BigDecimal x, BigDecimal y, BigDecimal z) {
 		super(ColorType.XYZ);
@@ -44,43 +44,71 @@ public class ColorXYZ extends Color {
 	/**
 	 * Constructor with <I>X</I>, <I>Y</I> and <I>Z</I> value as string.
 	 * 
-	 * @param x X-value.
-	 * @param y Y-value.
-	 * @param z Z-value.
+	 * @param x X value.
+	 * @param y Y value.
+	 * @param z Z value.
 	 */
 	public ColorXYZ(String x, String y, String z) {
 		this(
-			new BigDecimal(x), 
-			new BigDecimal(y), 
-			new BigDecimal(z)
+			x != null ? new BigDecimal(x) : null, 
+			y != null ? new BigDecimal(y) : null, 
+			z != null ? new BigDecimal(z) : null
 		);
 	}
 	
+	
 	/**
-	 * Returns the X-value.
+	 * Returns the x value.
 	 * 
-	 * @return X-value.
+	 * @return X value.
 	 */
 	public BigDecimal getX() {
 		return x;
 	}
+
+	/**
+	 * Sets the x value.
+	 * 
+	 * @param x X value.
+	 */
+	public void setX(BigDecimal x) {
+		this.x = x;
+	}
 	
 	/**
-	 * Returns the Y-value.
+	 * Returns the y value.
 	 * 
-	 * @return Y-value.
+	 * @return Y value.
 	 */
 	public BigDecimal getY() {
 		return y;
 	}
+
+	/**
+	 * Sets the y value.
+	 * 
+	 * @param y Y value.
+	 */
+	public void setY(BigDecimal y) {
+		this.y = y;
+	}
 	
 	/**
-	 * Returns the Z-value.
+	 * Returns the z value.
 	 * 
-	 * @return Z-value.
+	 * @return Z value.
 	 */
 	public BigDecimal getZ() {
 		return z;
+	}
+	
+	/**
+	 * Sets the z value.
+	 * 
+	 * @param z Z value.
+	 */
+	public void setZ(BigDecimal z) {
+		this.z = z;
 	}
 	
 	

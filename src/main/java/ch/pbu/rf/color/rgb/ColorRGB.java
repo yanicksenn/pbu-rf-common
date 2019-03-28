@@ -22,25 +22,25 @@ public class ColorRGB extends Color {
 	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_NULL)
 	@DecimalMin(value = ColorRGBValidator.R_MIN, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_MIN)
 	@DecimalMax(value = ColorRGBValidator.R_MAX, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_MAX)
-	private final BigDecimal r;
+	private BigDecimal r;
 
 	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_NULL)
 	@DecimalMin(value = ColorRGBValidator.G_MIN, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_MIN)
 	@DecimalMax(value = ColorRGBValidator.G_MAX, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_MAX)
-	private final BigDecimal g;
+	private BigDecimal g;
 
 	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_NULL)
 	@DecimalMin(value = ColorRGBValidator.B_MIN, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_MIN)
 	@DecimalMax(value = ColorRGBValidator.B_MAX, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_MAX)
-	private final BigDecimal b;
+	private BigDecimal b;
 	
 	
 	/**
 	 * Constructor with <I>R</I>, <I>G</I> and <I>B</I> value.
 	 * 
-	 * @param r R-value.
-	 * @param g G-value.
-	 * @param b B-value.
+	 * @param r R value.
+	 * @param g G value.
+	 * @param b B value.
 	 */
 	public ColorRGB(BigDecimal r, BigDecimal g, BigDecimal b) {
 		super(ColorType.RGB);
@@ -52,44 +52,71 @@ public class ColorRGB extends Color {
 	/**
 	 * Constructor with <I>R</I>, <I>G</I> and <I>B</I> value as string.
 	 * 
-	 * @param r R-value.
-	 * @param g G-value.
-	 * @param b B-value.
+	 * @param r R value.
+	 * @param g G value.
+	 * @param b B value.
 	 */
 	public ColorRGB(String r, String g, String b) {
 		this(
-			new BigDecimal(r), 
-			new BigDecimal(g), 
-			new BigDecimal(b)
+			r != null ? new BigDecimal(r) : null, 
+			g != null ? new BigDecimal(g) : null, 
+			b != null ? new BigDecimal(b) : null
 		);
 	}
 	
 	
 	/**
-	 * Returns the R-value.
+	 * Returns the r value.
 	 * 
-	 * @return R-value.
+	 * @return R value.
 	 */
 	public BigDecimal getR() {
 		return r;
 	}
 	
 	/**
-	 * Returns the G-value.
+	 * Sets the r value.
 	 * 
-	 * @return G-value.
+	 * @param r R value.
+	 */
+	public void setR(BigDecimal r) {
+		this.r = r;
+	}
+	
+	/**
+	 * Returns the g value.
+	 * 
+	 * @return G value.
 	 */
 	public BigDecimal getG() {
 		return g;
 	}
+
+	/**
+	 * Sets the g value.
+	 * 
+	 * @param g G value.
+	 */
+	public void setG(BigDecimal g) {
+		this.g = g;
+	}
 	
 	/**
-	 * Returns the B-value.
+	 * Returns the b value.
 	 * 
-	 * @return B-value.
+	 * @return B value.
 	 */
 	public BigDecimal getB() {
 		return b;
+	}
+	
+	/**
+	 * Sets the b value.
+	 * 
+	 * @param b B value.
+	 */
+	public void setB(BigDecimal b) {
+		this.b = b;
 	}
 	
 	

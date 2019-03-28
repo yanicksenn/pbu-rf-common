@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 
 import ch.pbu.rf.color.Color;
 import ch.pbu.rf.color.ColorType;
@@ -17,26 +18,29 @@ import ch.yanicksenn.metamodel.MetaModel;
  */
 @MetaModel
 public class ColorLab extends Color {
-	
+
+	@NotNull(message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_NULL)
 	@DecimalMin(value = ColorLabValidator.L_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_MIN)
 	@DecimalMax(value = ColorLabValidator.L_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_L_MAX)
-	private final BigDecimal l;
+	private BigDecimal l;
 
+	@NotNull(message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_NULL)
 	@DecimalMin(value = ColorLabValidator.A_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_MIN)
 	@DecimalMax(value = ColorLabValidator.A_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_A_MAX)
-	private final BigDecimal a;
-
+	private BigDecimal a;
+	
+	@NotNull(message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_NULL)
 	@DecimalMin(value = ColorLabValidator.B_MIN, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_MIN)
 	@DecimalMax(value = ColorLabValidator.B_MAX, message = ColorLabValidator.LABEL_COLOR_LAB_INVALID_B_MAX)
-	private final BigDecimal b;
+	private BigDecimal b;
 	
 	
 	/**
 	 * Constructor with <I>L</I>, <I>a</I> and <I>b</I> value.
 	 * 
-	 * @param l L-value.
-	 * @param a A-value.
-	 * @param b B-value.
+	 * @param l L value.
+	 * @param a A value.
+	 * @param b B value.
 	 */
 	public ColorLab(BigDecimal l, BigDecimal a, BigDecimal b) {
 		super(ColorType.LAB);
@@ -48,44 +52,71 @@ public class ColorLab extends Color {
 	/**
 	 * Constructor with <I>L</I>, <I>a</I> and <I>b</I> value as string.
 	 * 
-	 * @param l L-value.
-	 * @param a A-value.
-	 * @param b B-value.
+	 * @param l L value.
+	 * @param a A value.
+	 * @param b B value.
 	 */
 	public ColorLab(String l, String a, String b) {
 		this(
-			new BigDecimal(l), 
-			new BigDecimal(a), 
-			new BigDecimal(b)
+			l != null ? new BigDecimal(l) : null, 
+			a != null ? new BigDecimal(a) : null, 
+			b != null ? new BigDecimal(b) : null
 		);
 	}
 	
 	
 	/**
-	 * Returns the L-value.
+	 * Returns the l value.
 	 * 
-	 * @return L-value.
+	 * @return L value.
 	 */
 	public BigDecimal getL() {
 		return l;
 	}
 	
 	/**
-	 * Returns the a-value.
+	 * Sets the l value.
 	 * 
-	 * @return a-value.
+	 * @param l L value.
+	 */
+	public void setL(BigDecimal l) {
+		this.l = l;
+	}
+	
+	/**
+	 * Returns the a value.
+	 * 
+	 * @return A value.
 	 */
 	public BigDecimal getA() {
 		return a;
 	}
 	
 	/**
-	 * Returns the b-value.
+	 * Sets the a value.
 	 * 
-	 * @return b-value.
+	 * @param a A value.
+	 */
+	public void setA(BigDecimal a) {
+		this.a = a;
+	}
+	
+	/**
+	 * Returns the b value.
+	 * 
+	 * @return B value.
 	 */
 	public BigDecimal getB() {
 		return b;
+	}
+	
+	/**
+	 * Sets the b value.
+	 * 
+	 * @param b B value.
+	 */
+	public void setB(BigDecimal b) {
+		this.b = b;
 	}
 	
 	

@@ -24,8 +24,8 @@ public class ChromaticityCoordinate {
 	/**
 	 * Constructor with <I>X</I> and <I>Y</I>.
 	 * 
-	 * @param x X-value.
-	 * @param y Y-value.
+	 * @param x X value.
+	 * @param y Y value.
 	 */
 	public ChromaticityCoordinate(BigDecimal x, BigDecimal y) {
 		this.x = x;
@@ -35,33 +35,51 @@ public class ChromaticityCoordinate {
 	/**
 	 * Constructor with <I>X</I> and <I>Y</I> value as string.
 	 * 
-	 * @param x X-value.
-	 * @param y Y-value.
+	 * @param x X value.
+	 * @param y Y value.
 	 */
 	public ChromaticityCoordinate(String x, String y) {
 		this(
-			new BigDecimal(x),
-			new BigDecimal(y)
+			x != null ? new BigDecimal(x) : null,
+			y != null ? new BigDecimal(y) : null
 		);
 	}
 
 	
 	/**
-	 * Returns the x-value.
+	 * Returns the x value.
 	 * 
-	 * @return X-value.
+	 * @return X value.
 	 */
 	public BigDecimal getX() {
 		return x;
 	}
 	
 	/**
-	 * Returns the y-value.
+	 * Sets the x value.
 	 * 
-	 * @return Y-value.
+	 * @param x X value.
+	 */
+	public void setX(BigDecimal x) {
+		this.x = x;
+	}
+	
+	/**
+	 * Returns the y value.
+	 * 
+	 * @return Y value.
 	 */
 	public BigDecimal getY() {
 		return y;
+	}
+	
+	/**
+	 * Sets the y value.
+	 * 
+	 * @param y Y value.
+	 */
+	public void setY(BigDecimal y) {
+		this.y = y;
 	}
 	
 	

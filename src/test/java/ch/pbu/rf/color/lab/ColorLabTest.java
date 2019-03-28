@@ -15,7 +15,7 @@ class ColorLabTest {
 	
 	@Test
 	@DisplayName(value = "Test: ColorLab(String, String, String)")
-	void test() {
+	void testConstructor() {
 		
 		// Positive-Tests
 		Testing.assertValid(new ColorLab(ColorLabValidator.L_MIN, ColorLabValidator.A_MIN, ColorLabValidator.B_MIN));
