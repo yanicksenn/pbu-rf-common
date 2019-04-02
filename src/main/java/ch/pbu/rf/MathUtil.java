@@ -113,7 +113,7 @@ public class MathUtil {
 	}
 	
 	/**
-	 * Returns the width of the given matrix.
+	 * Calculates the width of the given matrix.
 	 * 
 	 * @param matrix Matrix.
 	 * 
@@ -122,10 +122,10 @@ public class MathUtil {
 	 * @throws NullPointerException If matrix is not specified.
 	 * @throws IllegalArgumentException If matrix is not valid.
 	 */
-	public static int getWidth(BigDecimal[][] matrix) {
+	public static int calculateWidth(BigDecimal[][] matrix) {
 		Objects.requireNonNull(matrix, "matrix is not specified");
 
-		if (validateMatrix(matrix, new MatrixValidatorEqualOrBigger(1))) {
+		if (!validateMatrix(matrix, new MatrixValidatorEqualOrBigger(1))) {
 			throw new IllegalArgumentException("matrix is not valid");
 		}
 		
@@ -134,7 +134,7 @@ public class MathUtil {
 	}
 	
 	/**
-	 * Returns the height of the given matrix.
+	 * Calculates the height of the given matrix.
 	 * 
 	 * @param matrix Matrix.
 	 * 
@@ -143,10 +143,10 @@ public class MathUtil {
 	 * @throws NullPointerException If matrix is not specified.
 	 * @throws IllegalArgumentException If matrix is not valid.
 	 */
-	public static int getHeight(BigDecimal[][] matrix) {
+	public static int calculateHeight(BigDecimal[][] matrix) {
 		Objects.requireNonNull(matrix, "matrix is not specified");
 
-		if (validateMatrix(matrix, new MatrixValidatorEqualOrBigger(1))) {
+		if (!validateMatrix(matrix, new MatrixValidatorEqualOrBigger(1))) {
 			throw new IllegalArgumentException("matrix is not valid");
 		}
 		
@@ -167,13 +167,13 @@ public class MathUtil {
 	public static boolean isRowVector(BigDecimal[][] matrix) {
 		Objects.requireNonNull(matrix, "matrix is not specified");
 
-		if (validateMatrix(matrix, new MatrixValidatorEqualOrBigger(1))) {
+		if (!validateMatrix(matrix, new MatrixValidatorEqualOrBigger(1))) {
 			throw new IllegalArgumentException("matrix is not valid");
 		}
 		
 		boolean result = true;
 		
-		int height = getHeight(matrix);
+		int height = calculateHeight(matrix);
 		if (height != 1) {
 			result = false;
 		}
@@ -194,13 +194,13 @@ public class MathUtil {
 	public static boolean isColumnVector(BigDecimal[][] matrix) {
 		Objects.requireNonNull(matrix, "matrix is not specified");
 
-		if (validateMatrix(matrix, new MatrixValidatorEqualOrBigger(1))) {
+		if (!validateMatrix(matrix, new MatrixValidatorEqualOrBigger(1))) {
 			throw new IllegalArgumentException("matrix is not valid");
 		}
 		
 		boolean result = true;
 		
-		int width = getWidth(matrix);
+		int width = calculateWidth(matrix);
 		if (width != 1) {
 			result = false;
 		}
@@ -209,55 +209,63 @@ public class MathUtil {
 	}
 	
 	/**
-	 * Returns <code>true</code> if the given matrix is a column-vector.
+	 * Returns <code>true</code> if the given matrix is quadratic.
 	 * 
 	 * @param matrix Matrix.
 	 * 
-	 * @return <code>true</code> if the given matrix is a column-vector. Returns <code>false</code> otherwise.
+	 * @return <code>true</code> if the given matrix is quadratic. Returns <code>false</code> otherwise.
 	 * 
 	 * @throws NullPointerException If matrix is not specified.
 	 * @throws IllegalArgumentException If matrix is not valid.
-	 */ asdflkajsdflakjsd
+	 */
 	public static boolean isQuadratic(BigDecimal[][] matrix) {
 		Objects.requireNonNull(matrix, "matrix is not specified");
 
-		if (validateMatrix(matrix, new MatrixValidatorEqualOrBigger(1))) {
+		if (!validateMatrix(matrix, new MatrixValidatorEqualOrBigger(1))) {
 			throw new IllegalArgumentException("matrix is not valid");
 		}
 		
-		boolean result = getWidth(matrix) == getHeight(matrix);
+		boolean result = calculateWidth(matrix) == calculateHeight(matrix);
 		return result;
 	}
 	
 	/**
+	 * Calculates the product of the given matrices.
 	 * 
+	 * @param matrix1 First matrix.
+	 * @param matrix2 Second matrix.
+	 * @param mc Math-Context.
 	 * 
-	 * @param matrix1
-	 * @param matrix2
+	 * @return The product of the given matrices.
 	 * 
-	 * @return
+	 * @throws NullPointerException If matrix1 is not specified.
+	 * @throws NullPointerException If matrix2 is not specified.
+	 * @throws NullPointerException If mc is not specified.
+	 * @throws IllegalArgumentException If matrix1 is not valid.
+	 * @throws IllegalArgumentException If matrix2 is not valid.
+	 * @throws IllegalArgumentException If the width of matrix1 does not match the height of matrix2.
 	 */
 	public static BigDecimal[][] calculateProduct(BigDecimal[][] matrix1, BigDecimal[][] matrix2, MathContext mc) {
 		Objects.requireNonNull(matrix1, "matrix1 is not specified");
 		Objects.requireNonNull(matrix2, "matrix2 is not specified");
 		Objects.requireNonNull(mc, "mc is not specified");
 		
-		if (validateMatrix(matrix1, new MatrixValidatorEqualOrBigger(1))) {
+		if (!validateMatrix(matrix1, new MatrixValidatorEqualOrBigger(1))) {
 			throw new IllegalArgumentException("matrix1 is not valid");
 		}
 		
-		if (validateMatrix(matrix2, new MatrixValidatorEqualOrBigger(1))) {
+		if (!validateMatrix(matrix2, new MatrixValidatorEqualOrBigger(1))) {
 			throw new IllegalArgumentException("matrix2 is not valid");
 		}
 		
-		int m1Width = getWidth(matrix1);
-		int m1Height = getHeight(matrix2);
+		int m1Width = calculateWidth(matrix1);
+		int m1Height = calculateHeight(matrix1);
 		
-		int m2Width = getWidth(matrix2);
-		int m2Height = getHeight(matrix2);
+		int m2Width = calculateWidth(matrix2);
+		int m2Height = calculateHeight(matrix2);
 		
-		if (m1Height != m2Width) {
-			throw new IllegalArgumentException(String.format("width of matrix2 (%d) does not match with the height of matrix1 (%d)", m2Width, m1Height));
+		if (m1Width != m2Height) {
+			throw new IllegalArgumentException(String.format("width of matrix1 (%d) does not match with the height of matrix2 (%d)", m1Width, m2Height));
 		}
 		
 		BigDecimal[][] result = null;
@@ -311,28 +319,24 @@ public class MathUtil {
 				
 				result[0][y] = value;
 			}
+		} else {
+			// Matrix and matrix
+			result = MathUtil.createMatrix(BigDecimal.ZERO, m2Width, m1Height);
+			
+			for (int y1 = 0; y1 < m1Height; y1++) {
+				for (int x2 = 0; x2 < m2Width; x2++) {
+					BigDecimal value = BigDecimal.ZERO;
+					
+					for (int z = 0; z < m1Width; z++) {
+						value = value.add(matrix1[y1][z].multiply(matrix2[z][x2], mc), mc);
+					}
+
+					result[y1][x2] = value;
+				}
+			}
 		}
 		
 		return result;
-
-//		BigDecimal[][] result = MathUtil.createMatrix(BigDecimal.ZERO, width, height);
-//		int rWidth = result[0].length;
-//		int rHeight = result.length;
-//		
-//		for (int ry = 0; ry < rHeight; ry++) {
-//			for (int rx = 0; rx < rWidth; rx++) {
-//				
-//				
-//				
-//				for (int x1 = 0; x1 < (useM1Width ? m1Width : m2Width); x1++) {
-//					for (int y2 = 0; y2 < (useM1Height ? m1Height : m2Height); y2++) {
-//						
-//					}
-//				}
-//			}
-//		}
-//		
-//		return null;
 	}
 	
 	/**
