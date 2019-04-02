@@ -5,11 +5,15 @@ import java.math.MathContext;
 import java.util.Objects;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
+import ch.pbu.rf.MathUtil;
 import ch.pbu.rf.RF;
 import ch.pbu.rf.color.deltae.DeltaE1976CalculationException;
 import ch.pbu.rf.color.deltae.DeltaE2000CalculationException;
 import ch.pbu.rf.color.lab.ColorLab;
+import ch.pbu.rf.color.rgb.ChromaticityCoordinate;
 import ch.pbu.rf.color.rgb.ColorRGB;
+import ch.pbu.rf.color.rgb.ColorSpaceRGB;
+import ch.pbu.rf.color.rgb.TransformationMatrix;
 import ch.pbu.rf.color.xyz.ColorXYZ;
 import ch.pbu.rf.illuminant.Illuminant;
 
@@ -152,6 +156,103 @@ public class ColorUtil {
 		BigDecimal b = fy.subtract(fz, MC).multiply(bd(200, MC), MC);
 
 		return new ColorLab(l, a, b);
+	}
+	
+	
+	/**
+	 * 
+	 * 
+	 * @param colorSpace
+	 * @param illuminant
+	 * 
+	 * @return
+	 * 
+	 * @throws NullPointerException If colorSpace is not specified.
+	 * @throws NullPointerException If illuminant is not specified.
+	 */
+	public static TransformationMatrix calculateRGBTransformationMatrix(ColorSpaceRGB colorSpace, Illuminant illuminant) throws NullPointerException {
+		Objects.requireNonNull(colorSpace, "colorSpace is not specified");
+		Objects.requireNonNull(illuminant, "illuminant is not specified");
+		
+		ChromaticityCoordinate r = colorSpace.getR();
+		BigDecimal ccrx = r.getX();
+		BigDecimal ccry = r.getY();
+
+		ChromaticityCoordinate g = colorSpace.getG();
+		BigDecimal ccgx = g.getX();
+		BigDecimal ccgy = g.getY();
+
+		ChromaticityCoordinate b = colorSpace.getB();
+		BigDecimal ccbx = b.getX();
+		BigDecimal ccby = b.getY();
+		
+		ColorXYZ referenceWhite = getReferenceWhite(illuminant);
+		BigDecimal xw = referenceWhite.getX();
+		BigDecimal yw = referenceWhite.getY();
+		BigDecimal zw = referenceWhite.getZ();
+		
+		// M 
+		
+		BigDecimal xr = ccrx.divide(ccry, MC);
+		BigDecimal xg = ccrx.divide(ccgy, MC);
+		BigDecimal xb = ccrx.divide(ccby, MC);
+
+		BigDecimal yr = BigDecimal.ONE;
+		BigDecimal yg = BigDecimal.ONE;
+		BigDecimal yb = BigDecimal.ONE;
+
+		BigDecimal zr = BigDecimal.ONE.subtract(ccrx, MC).subtract(ccry, MC).divide(ccry, MC);
+		BigDecimal zg = BigDecimal.ONE.subtract(ccgx, MC).subtract(ccgy, MC).divide(ccgy, MC);
+		BigDecimal zb = BigDecimal.ONE.subtract(ccbx, MC).subtract(ccby, MC).divide(ccby, MC);
+		
+		BigDecimal[][] matrix = new BigDecimal[][] {
+			{ xr, xg, xb },
+			{ yr, yg, yb },
+			{ zr, zg, zb }
+		};
+		
+		// M^(-1)
+		
+		BigDecimal[][] matrixInversed = MathUtil.calculate3x3Inverse(matrix, MC);
+		matrixInversed[0][0] = matrixInversed[0][0].multiply(xw);
+		matrixInversed[0][1] = matrixInversed[0][1].multiply(yw);
+		matrixInversed[0][2] = matrixInversed[0][2].multiply(zw);
+		matrixInversed[1][0] = matrixInversed[1][0].multiply(xw);
+		matrixInversed[1][1] = matrixInversed[1][1].multiply(yw);
+		matrixInversed[1][2] = matrixInversed[1][2].multiply(zw);
+		matrixInversed[2][0] = matrixInversed[2][0].multiply(xw);
+		matrixInversed[2][1] = matrixInversed[2][1].multiply(yw);
+		matrixInversed[2][2] = matrixInversed[2][2].multiply(zw);
+		
+		// xr yr zr
+		// xg yg zg
+		// xb yb zb
+		
+		BigDecimal dxr = MathUtil.calculate2x2Determinant(yg, zg, yb, zb, MC);
+		BigDecimal dyr = MathUtil.calculate2x2Determinant(xg, zg, xb, zb, MC);
+		BigDecimal dzr = MathUtil.calculate2x2Determinant(xg, yg, xb, yb, MC);
+		
+		BigDecimal dxg = MathUtil.calculate2x2Determinant(yr, zr, yb, zb, MC);
+		BigDecimal dyg = MathUtil.calculate2x2Determinant(xr, zr, xb, zb, MC);
+		BigDecimal dzg = MathUtil.calculate2x2Determinant(xr, yr, xb, yb, MC);
+		
+		BigDecimal dxb = MathUtil.calculate2x2Determinant(yr, zr, yg, zg, MC);
+		BigDecimal dyb = MathUtil.calculate2x2Determinant(xr, zr, xg, zg, MC);
+		BigDecimal dzb = MathUtil.calculate2x2Determinant(xr, yr, xg, yg, MC);
+		
+		// Multiply
+		
+		// + - +
+		// - + -
+		// + - +
+
+		dyr = dyr.negate(MC);
+		dxg = dxg.negate(MC);
+		dzg = dzg.negate(MC);
+		dyb = dyb.negate(MC);
+		
+		return null;
+		
 	}
 
 	/**

@@ -23,8 +23,10 @@ public class TransformationMatrixTest {
 	@Test
 	@DisplayName(value = "Test: TransformationMatrix(BigDecimal)")
 	void testConstructor() {
-		new TransformationMatrix(null);
+		new TransformationMatrix();
 		new TransformationMatrix(BigDecimal.ZERO);
+		
+		Assertions.assertThrows(NullPointerException.class, () -> new TransformationMatrix(null));
 	}
 	
 	@Test

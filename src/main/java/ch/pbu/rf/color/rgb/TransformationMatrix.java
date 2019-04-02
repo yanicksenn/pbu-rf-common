@@ -3,6 +3,8 @@ package ch.pbu.rf.color.rgb;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import ch.yanicksenn.util.Util;
+
 /**
  * Represents the transformation matrix;
  * 
@@ -11,12 +13,24 @@ import java.util.Objects;
 public class TransformationMatrix {
 	private final BigDecimal[][] values;
 	
+	
+	/**
+	 * Constructor.
+	 */
+	public TransformationMatrix() {
+		this(BigDecimal.ZERO);
+	}
+	
 	/**
 	 * Constructor with default value.
 	 * 
 	 * @param defaultValue Default-value.
+	 * 
+	 * @throws NullPointerException If defaultValue is not specified;
 	 */
 	public TransformationMatrix(BigDecimal defaultValue) {
+		Objects.requireNonNull(defaultValue, "defaultValue is not specified");
+		
 		values = new BigDecimal[][] {
 			{ defaultValue, defaultValue, defaultValue },
 			{ defaultValue, defaultValue, defaultValue },
@@ -99,6 +113,7 @@ public class TransformationMatrix {
 	}
 	
 
+
 	@Override
 	public int hashCode() {
 		BigDecimal x0_y0 = get(Location.X0_Y0);
@@ -146,15 +161,15 @@ public class TransformationMatrix {
 		TransformationMatrix other = (TransformationMatrix) obj;
 		
 		return 
-			this.get(Location.X0_Y0).compareTo(other.get(Location.X0_Y0)) == 0 && 
-			this.get(Location.X1_Y0).compareTo(other.get(Location.X1_Y0)) == 0 && 
-			this.get(Location.X2_Y0).compareTo(other.get(Location.X2_Y0)) == 0 && 
-			this.get(Location.X0_Y1).compareTo(other.get(Location.X0_Y1)) == 0 && 
-			this.get(Location.X1_Y1).compareTo(other.get(Location.X1_Y1)) == 0 && 
-			this.get(Location.X2_Y1).compareTo(other.get(Location.X2_Y1)) == 0 && 
-			this.get(Location.X0_Y2).compareTo(other.get(Location.X0_Y2)) == 0 && 
-			this.get(Location.X1_Y2).compareTo(other.get(Location.X1_Y2)) == 0 && 
-			this.get(Location.X2_Y2).compareTo(other.get(Location.X2_Y2)) == 0;
+			Util.compareTo(this.get(Location.X0_Y0), other.get(Location.X0_Y0)) == 0 && 
+			Util.compareTo(this.get(Location.X1_Y0), other.get(Location.X1_Y0)) == 0 && 
+			Util.compareTo(this.get(Location.X2_Y0), other.get(Location.X2_Y0)) == 0 && 
+			Util.compareTo(this.get(Location.X0_Y1), other.get(Location.X0_Y1)) == 0 && 
+			Util.compareTo(this.get(Location.X1_Y1), other.get(Location.X1_Y1)) == 0 && 
+			Util.compareTo(this.get(Location.X2_Y1), other.get(Location.X2_Y1)) == 0 && 
+			Util.compareTo(this.get(Location.X0_Y2), other.get(Location.X0_Y2)) == 0 && 
+			Util.compareTo(this.get(Location.X1_Y2), other.get(Location.X1_Y2)) == 0 && 
+			Util.compareTo(this.get(Location.X2_Y2), other.get(Location.X2_Y2)) == 0;
 	}
 	
 	

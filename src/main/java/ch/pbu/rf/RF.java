@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ch.pbu.rf.color.ColorUtil;
-import ch.pbu.rf.color.rgb.ChromaticityCoordinateTest;
+import ch.pbu.rf.color.rgb.ChromaticityCoordinate;
+import ch.pbu.rf.color.rgb.ColorSpaceRGB;
 import ch.pbu.rf.illuminant.Illuminant;
 
 /**
@@ -186,19 +186,30 @@ public final class RF {
 	public static final class RGB {
 
 		/**
-		 * Represents the chromaticity-coordinates.
+		 * Represents the color space.
 		 * 
 		 * @author Yanick Senn
 		 */
-		public static final class CC {
-			public static final ChromaticityCoordinateTest R = new ChromaticityCoordinateTest("0.64", "0.33");
-			public static final ChromaticityCoordinateTest G = new ChromaticityCoordinateTest("0.30", "0.60");
-			public static final ChromaticityCoordinateTest B = new ChromaticityCoordinateTest("0.15", "0.06");
+		public static final class ColorSpace {
+			public static final ColorSpaceRGB sRGB;
+			
+			static {
+				sRGB = new ColorSpaceRGB()
+					.setR(new ChromaticityCoordinate()
+						.setX(new BigDecimal("0.64", MC))
+						.setY(new BigDecimal("0.33", MC)))
+					.setG(new ChromaticityCoordinate()
+						.setX(new BigDecimal("0.30", MC))
+						.setY(new BigDecimal("0.60", MC)))
+					.setB(new ChromaticityCoordinate()
+						.setX(new BigDecimal("0.15", MC))
+						.setY(new BigDecimal("0.06", MC)));
+			}
 			
 			/**
 			 * Private constructor.
 			 */
-			private CC() {
+			private ColorSpace() {
 				throw new AssertionError();
 			}
 			

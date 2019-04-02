@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import ch.pbu.rf.color.Color;
 import ch.pbu.rf.color.ColorType;
 import ch.yanicksenn.metamodel.MetaModel;
+import ch.yanicksenn.util.Util;
 
 /**
  * Represents the Color-RGB.
@@ -20,48 +21,26 @@ import ch.yanicksenn.metamodel.MetaModel;
 public class ColorRGB extends Color {
 	
 	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_NULL)
-	@DecimalMin(value = ColorRGBValidator.R_MIN, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_MIN)
-	@DecimalMax(value = ColorRGBValidator.R_MAX, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_MAX)
+	@DecimalMin(value = ColorRGBValidator.R_MIN_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_MIN)
+	@DecimalMax(value = ColorRGBValidator.R_MAX_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_MAX)
 	private BigDecimal r;
 
 	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_NULL)
-	@DecimalMin(value = ColorRGBValidator.G_MIN, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_MIN)
-	@DecimalMax(value = ColorRGBValidator.G_MAX, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_MAX)
+	@DecimalMin(value = ColorRGBValidator.G_MIN_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_MIN)
+	@DecimalMax(value = ColorRGBValidator.G_MAX_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_MAX)
 	private BigDecimal g;
 
 	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_NULL)
-	@DecimalMin(value = ColorRGBValidator.B_MIN, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_MIN)
-	@DecimalMax(value = ColorRGBValidator.B_MAX, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_MAX)
+	@DecimalMin(value = ColorRGBValidator.B_MIN_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_MIN)
+	@DecimalMax(value = ColorRGBValidator.B_MAX_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_MAX)
 	private BigDecimal b;
 	
 	
 	/**
-	 * Constructor with <I>R</I>, <I>G</I> and <I>B</I> value.
-	 * 
-	 * @param r R value.
-	 * @param g G value.
-	 * @param b B value.
+	 * Constructor.
 	 */
-	public ColorRGB(BigDecimal r, BigDecimal g, BigDecimal b) {
+	public ColorRGB() {
 		super(ColorType.RGB);
-		this.r = r;
-		this.g = g;
-		this.b = b;
-	}
-
-	/**
-	 * Constructor with <I>R</I>, <I>G</I> and <I>B</I> value as string.
-	 * 
-	 * @param r R value.
-	 * @param g G value.
-	 * @param b B value.
-	 */
-	public ColorRGB(String r, String g, String b) {
-		this(
-			r != null ? new BigDecimal(r) : null, 
-			g != null ? new BigDecimal(g) : null, 
-			b != null ? new BigDecimal(b) : null
-		);
 	}
 	
 	
@@ -78,9 +57,12 @@ public class ColorRGB extends Color {
 	 * Sets the r value.
 	 * 
 	 * @param r R value.
+	 * 
+	 * @return This instance.
 	 */
-	public void setR(BigDecimal r) {
+	public ColorRGB setR(BigDecimal r) {
 		this.r = r;
+		return this;
 	}
 	
 	/**
@@ -96,9 +78,12 @@ public class ColorRGB extends Color {
 	 * Sets the g value.
 	 * 
 	 * @param g G value.
+	 * 
+	 * @return This instance.
 	 */
-	public void setG(BigDecimal g) {
+	public ColorRGB setG(BigDecimal g) {
 		this.g = g;
+		return this;
 	}
 	
 	/**
@@ -114,16 +99,12 @@ public class ColorRGB extends Color {
 	 * Sets the b value.
 	 * 
 	 * @param b B value.
+	 * 
+	 * @return This instance.
 	 */
-	public void setB(BigDecimal b) {
+	public ColorRGB setB(BigDecimal b) {
 		this.b = b;
-	}
-	
-	
-	@Override
-	public String toString() {
-		return String.format("%s[type: %s, R: %03d, G: %03d, B: %03d]", 
-			getClass().getSimpleName(), getType(), r.doubleValue(), g.doubleValue(), b.doubleValue());
+		return this;
 	}
 
 	
@@ -132,7 +113,6 @@ public class ColorRGB extends Color {
 		return Objects.hash(r, g, b);
 	}
 	
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -150,8 +130,8 @@ public class ColorRGB extends Color {
 		ColorRGB other = (ColorRGB) obj;
 		
 		return 
-			this.r.compareTo(other.r) == 0 &&
-			this.g.compareTo(other.g) == 0 &&
-			this.b.compareTo(other.b) == 0;
+			Util.compareTo(this.r, other.r) == 0 &&
+			Util.compareTo(this.g, other.g) == 0 &&
+			Util.compareTo(this.b, other.b) == 0;
 	}
 }

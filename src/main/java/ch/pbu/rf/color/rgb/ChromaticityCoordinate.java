@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 import ch.yanicksenn.metamodel.MetaModel;
+import ch.yanicksenn.util.Util;
 
 /**
  * Represents the chromaticity-coordinates.
@@ -21,30 +22,6 @@ public class ChromaticityCoordinate {
 	@NotNull(message = ChromaticityCoordinateValidator.LABEL_COLOR_RGB_CC_INVALID_X_NULL)
 	private BigDecimal y;
 	
-	/**
-	 * Constructor with <I>X</I> and <I>Y</I>.
-	 * 
-	 * @param x X value.
-	 * @param y Y value.
-	 */
-	public ChromaticityCoordinate(BigDecimal x, BigDecimal y) {
-		this.x = x;
-		this.y = y;
-	}
-
-	/**
-	 * Constructor with <I>X</I> and <I>Y</I> value as string.
-	 * 
-	 * @param x X value.
-	 * @param y Y value.
-	 */
-	public ChromaticityCoordinate(String x, String y) {
-		this(
-			x != null ? new BigDecimal(x) : null,
-			y != null ? new BigDecimal(y) : null
-		);
-	}
-
 	
 	/**
 	 * Returns the x value.
@@ -59,9 +36,12 @@ public class ChromaticityCoordinate {
 	 * Sets the x value.
 	 * 
 	 * @param x X value.
+	 * 
+	 * @return This instance.
 	 */
-	public void setX(BigDecimal x) {
+	public ChromaticityCoordinate setX(BigDecimal x) {
 		this.x = x;
+		return this;
 	}
 	
 	/**
@@ -77,9 +57,12 @@ public class ChromaticityCoordinate {
 	 * Sets the y value.
 	 * 
 	 * @param y Y value.
+	 * 
+	 * @return This instance.
 	 */
-	public void setY(BigDecimal y) {
+	public ChromaticityCoordinate setY(BigDecimal y) {
 		this.y = y;
+		return this;
 	}
 	
 	
@@ -95,7 +78,6 @@ public class ChromaticityCoordinate {
 		return Objects.hash(x, y);
 	}
 	
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -113,8 +95,8 @@ public class ChromaticityCoordinate {
 		ChromaticityCoordinate other = (ChromaticityCoordinate) obj;
 
 		return 
-			this.x.compareTo(other.x) == 0 &&
-			this.y.compareTo(other.y) == 0;
+			Util.compareTo(this.x, other.x) == 0 &&
+			Util.compareTo(this.y, other.y) == 0;
 	}
 	
 }

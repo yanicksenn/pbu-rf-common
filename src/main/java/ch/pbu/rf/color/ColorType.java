@@ -8,17 +8,17 @@ package ch.pbu.rf.color;
 public enum ColorType {
 	
 	/**
-	 * Color-Type for CIELAB.
+	 * Represents the CIELAB.
 	 */
 	LAB,
 	
 	/**
-	 * Color-Type for XYZ.
+	 * Represents the XYZ.
 	 */
 	XYZ,
 	
 	/**
-	 * Color-Type for RGB.
+	 * Represents the RGB.
 	 */
 	RGB,
 	;
