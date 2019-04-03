@@ -310,14 +310,14 @@ public class MathUtil {
 			// Row-vector and matrix.
 			result = MathUtil.createMatrix(BigDecimal.ZERO, m2Width, m1Height);
 			
-			for (int y = 0; y < m2Height; y++) {
+			for (int x = 0; x < m2Width; x++) {
 				BigDecimal value = BigDecimal.ZERO;
 				
-				for (int x = 0; x < m1Width; x++) {
-					value = value.add(matrix1[0][x].multiply(matrix2[y][x], mc), mc);
+				for (int y = 0; y < m1Width; y++) {
+					value = value.add(matrix1[0][y].multiply(matrix2[y][x], mc), mc);
 				}
 				
-				result[0][y] = value;
+				result[0][x] = value;
 			}
 		} else {
 			// Matrix and matrix

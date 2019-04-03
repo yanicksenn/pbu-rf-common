@@ -246,6 +246,78 @@ class MathUtilTest {
 		Testing.assertEquals(MathUtil.bd("8", MC), matrix15[1][0], MC);
 		Testing.assertEquals(MathUtil.bd("-12", MC), matrix15[1][1], MC);
 		Testing.assertEquals(MathUtil.bd("20", MC), matrix15[1][2], MC);
+
+		BigDecimal[][] matrix16 = MathUtil.createMatrix(BigDecimal.ZERO, 3, 2);
+		matrix16[0][0] = MathUtil.bd("1", MC);
+		matrix16[0][1] = MathUtil.bd("2", MC);
+		matrix16[0][2] = MathUtil.bd("3", MC);
+		matrix16[1][0] = MathUtil.bd("4", MC);
+		matrix16[1][1] = MathUtil.bd("5", MC);
+		matrix16[1][2] = MathUtil.bd("6", MC);
+		
+		BigDecimal[][] matrix17 = MathUtil.createMatrix(BigDecimal.ZERO, 1, 3);
+		matrix17[0][0] = MathUtil.bd("7", MC);
+		matrix17[1][0] = MathUtil.bd("8", MC);
+		matrix17[2][0] = MathUtil.bd("9", MC);
+		
+		BigDecimal[][] matrix18 = MathUtil.calculateProduct(matrix16, matrix17, MC);
+		Testing.assertEquals(MathUtil.bd("50", MC), matrix18[0][0], MC);
+		Testing.assertEquals(MathUtil.bd("122", MC), matrix18[1][0], MC);
+
+		BigDecimal[][] matrix19 = MathUtil.createMatrix(BigDecimal.ZERO, 3, 1);
+		matrix19[0][0] = MathUtil.bd("7", MC);
+		matrix19[0][1] = MathUtil.bd("8", MC);
+		matrix19[0][2] = MathUtil.bd("9", MC);
+		
+		BigDecimal[][] matrix20 = MathUtil.createMatrix(BigDecimal.ZERO, 2, 3);
+		matrix20[0][0] = MathUtil.bd("1", MC);
+		matrix20[0][1] = MathUtil.bd("2", MC);
+		matrix20[1][0] = MathUtil.bd("3", MC);
+		matrix20[1][1] = MathUtil.bd("4", MC);
+		matrix20[2][0] = MathUtil.bd("5", MC);
+		matrix20[2][1] = MathUtil.bd("6", MC);
+		
+		BigDecimal[][] matrix21 = MathUtil.calculateProduct(matrix19, matrix20, MC);
+		Testing.assertEquals(MathUtil.bd("76", MC), matrix21[0][0], MC);
+		Testing.assertEquals(MathUtil.bd("100", MC), matrix21[0][1], MC);
+
+		BigDecimal[][] matrix22 = MathUtil.createMatrix(BigDecimal.ZERO, 3, 1);
+		matrix22[0][0] = MathUtil.bd("1", MC);
+		matrix22[0][1] = MathUtil.bd("2", MC);
+		matrix22[0][2] = MathUtil.bd("3", MC);
+		
+		BigDecimal[][] matrix23 = MathUtil.createMatrix(BigDecimal.ZERO, 1, 3);
+		matrix23[0][0] = MathUtil.bd("4", MC);
+		matrix23[1][0] = MathUtil.bd("5", MC);
+		matrix23[2][0] = MathUtil.bd("6", MC);
+		
+		BigDecimal[][] matrix24 = MathUtil.calculateProduct(matrix22, matrix23, MC);
+		Testing.assertEquals(MathUtil.bd("32", MC), matrix24[0][0], MC);
+
+		BigDecimal[][] matrix25 = MathUtil.createMatrix(BigDecimal.ZERO, 1, 3);
+		matrix25[0][0] = MathUtil.bd("1", MC);
+		matrix25[1][0] = MathUtil.bd("2", MC);
+		matrix25[2][0] = MathUtil.bd("3", MC);
+		
+		BigDecimal[][] matrix26 = MathUtil.createMatrix(BigDecimal.ZERO, 4, 1);
+		matrix26[0][0] = MathUtil.bd("4", MC);
+		matrix26[0][1] = MathUtil.bd("5", MC);
+		matrix26[0][2] = MathUtil.bd("6", MC);
+		matrix26[0][3] = MathUtil.bd("7", MC);
+		
+		BigDecimal[][] matrix27 = MathUtil.calculateProduct(matrix25, matrix26, MC);
+		Testing.assertEquals(MathUtil.bd("4", MC), matrix27[0][0], MC);
+		Testing.assertEquals(MathUtil.bd("5", MC), matrix27[0][1], MC);
+		Testing.assertEquals(MathUtil.bd("6", MC), matrix27[0][2], MC);
+		Testing.assertEquals(MathUtil.bd("7", MC), matrix27[0][3], MC);
+		Testing.assertEquals(MathUtil.bd("8", MC), matrix27[1][0], MC);
+		Testing.assertEquals(MathUtil.bd("10", MC), matrix27[1][1], MC);
+		Testing.assertEquals(MathUtil.bd("12", MC), matrix27[1][2], MC);
+		Testing.assertEquals(MathUtil.bd("14", MC), matrix27[1][3], MC);
+		Testing.assertEquals(MathUtil.bd("15", MC), matrix27[2][0], MC);
+		Testing.assertEquals(MathUtil.bd("18", MC), matrix27[2][1], MC);
+		Testing.assertEquals(MathUtil.bd("21", MC), matrix27[2][2], MC);
+		Testing.assertEquals(MathUtil.bd("24", MC), matrix27[2][3], MC);
 	}
 
 	@Test
