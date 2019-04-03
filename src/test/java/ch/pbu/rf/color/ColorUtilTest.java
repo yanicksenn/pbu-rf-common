@@ -1,17 +1,21 @@
 package ch.pbu.rf.color;
 
+import static ch.pbu.rf.MathUtil.bd;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import ch.pbu.rf.RF;
 import ch.pbu.rf.color.deltae.Delta;
-import ch.pbu.rf.color.deltae.DeltaE1976CalculationException;
-import ch.pbu.rf.color.deltae.DeltaE2000CalculationException;
 import ch.pbu.rf.color.lab.ColorLab;
+import ch.pbu.rf.color.rgb.ColorSpaceRGB;
 import ch.pbu.rf.color.xyz.ColorXYZ;
+import ch.pbu.rf.illuminant.Illuminant;
 import ch.yanicksenn.testing.Testing;
 
 /**
@@ -21,107 +25,141 @@ import ch.yanicksenn.testing.Testing;
  */
 @DisplayName(value = "Test: ColorUtil")
 class ColorUtilTest {
-	private static final MathContext MC = ColorUtil.MC;
-	private static final BigDecimal DELTA = new BigDecimal("0.001");
+	private static final MathContext MC = new MathContext(100, RoundingMode.HALF_UP);
+	private static final BigDecimal DELTA = bd("0.001", MC);
+
 
 	@Test
-	@DisplayName(value = "Test: getReferenceWhite(Illuminant)")
-	void testGetReferenceWhite() {
-		ColorXYZ d65_2 = ColorUtil.getReferenceWhite(RF.CIE1931.D50);
-		Testing.assertEquals(new BigDecimal("0.964"), d65_2.getX(), DELTA, MC);
-		Testing.assertEquals(new BigDecimal("1.000"), d65_2.getY(), DELTA, MC);
-		Testing.assertEquals(new BigDecimal("0.825"), d65_2.getZ(), DELTA, MC);
-		
-		ColorXYZ d65_10 = ColorUtil.getReferenceWhite(RF.CIE1964.D50);
-		Testing.assertEquals(new BigDecimal("0.967"), d65_10.getX(), DELTA, MC);
-		Testing.assertEquals(new BigDecimal("1.000"), d65_10.getY(), DELTA, MC);
-		Testing.assertEquals(new BigDecimal("0.814"), d65_10.getZ(), DELTA, MC);
+	@DisplayName(value = "Test: calculateReferenceWhite(Illuminant) - Exceptions")
+	void testCalculateReferenceWhite_exceptions() {
+		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.calculateReferenceWhite(null));
+		Assertions.assertDoesNotThrow(() -> ColorUtil.calculateReferenceWhite(RF.CIE1931.D50));
 	}
 	
 	@Test
-	@DisplayName(value = "Test: convertToLab(ColorXYZ, Illuminant)")
-	void testConvertToLabColor() {
-		ColorLab lab = ColorUtil.convertToLab(new ColorXYZ("0.300", "0.700", "0.200"), RF.CIE1931.D50);
-		Testing.assertEquals(new BigDecimal("86.996"), lab.getL(), DELTA, MC);
-		Testing.assertEquals(new BigDecimal("-105.145"), lab.getA(), DELTA, MC);
-		Testing.assertEquals(new BigDecimal("52.884"), lab.getB(), DELTA, MC);
+	@DisplayName(value = "Test: calculateReferenceWhite(Illuminant) - CIE1931 D50")
+	void testCalculateReferenceWhite_cie1931_d50() {
+		ColorXYZ d65_2 = ColorUtil.calculateReferenceWhite(RF.CIE1931.D50);
+		Testing.assertEquals(bd("0.964", MC), d65_2.getX(), DELTA, MC);
+		Testing.assertEquals(bd("1.000", MC), d65_2.getY(), DELTA, MC);
+		Testing.assertEquals(bd("0.825", MC), d65_2.getZ(), DELTA, MC);
+	}
+
+	@Test
+	@DisplayName(value = "Test: calculateReferenceWhite(Illuminant) - CIE1964 D50")
+	void testCalculateReferenceWhite_cie1964_d50() {
+		ColorXYZ d65_10 = ColorUtil.calculateReferenceWhite(RF.CIE1964.D50);
+		Testing.assertEquals(bd("0.967", MC), d65_10.getX(), DELTA, MC);
+		Testing.assertEquals(bd("1.000", MC), d65_10.getY(), DELTA, MC);
+		Testing.assertEquals(bd("0.814", MC), d65_10.getZ(), DELTA, MC);
+	}
+	
+	@Test
+	@DisplayName(value = "Test: convertToLab(ColorXYZ, Illuminant) - Exceptions")
+	void testConvertToLabColor_exceptions() {
+		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.convertToLab(null, RF.CIE1931.D50));
+		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.convertToLab(new ColorXYZ(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO), null));
+		Assertions.assertDoesNotThrow(() -> ColorUtil.convertToLab(new ColorXYZ(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO), RF.CIE1931.D50));
+	}
+	
+	@Test
+	@DisplayName(value = "Test: convertToLab(ColorXYZ, Illuminant) - CIE1931 D50")
+	void testConvertToLabColor_cie1964_d50() {
+		ColorLab lab = ColorUtil.convertToLab(new ColorXYZ(bd("0.300", MC), bd("0.700", MC), bd("0.200", MC)), RF.CIE1931.D50);
+		Testing.assertEquals(bd("86.996", MC), lab.getL(), DELTA, MC);
+		Testing.assertEquals(bd("-105.145", MC), lab.getA(), DELTA, MC);
+		Testing.assertEquals(bd("52.884", MC), lab.getB(), DELTA, MC);
+	}
+	
+	@Test
+	@DisplayName(value = "Test: calculateRGBTransformationMatrix(ColorSpaceRGB, Illuminant) - Exceptions")
+	void testCalculateRGBTransformationMatrix_exceptions() {
+		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.calculateRGBTransformationMatrix(null, RF.CIE1931.D50));
+		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB, null));
+		Assertions.assertDoesNotThrow(() -> ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB, RF.CIE1931.D50));
+	}
+	
+	@Test
+	@DisplayName(value = "Test: calculateRGBTransformationMatrix(ColorSpaceRGB, Illuminant) - sRGB and CIE1931 D50")
+	void testCalculateRGBTransformationMatrix_sRGB_cie1931_d50() {
+		BigDecimal[][] matrix = ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB, RF.CIE1931.D50);
 	}
 	
 	@Test
 	@DisplayName(value = "Test: calculateDeltaE1976(ColorLab, ColorLab)")
-	void testCalculateDeltaE1976() throws DeltaE1976CalculationException {
+	void testCalculateDeltaE1976() {
 		ColorLab color1 = null;
 		ColorLab color2 = null;
 		
-		color1 = new ColorLab("52.1", "42.18", "20.92");
-		color2 = new ColorLab("52", "41", "25");
-		Testing.assertEquals(new BigDecimal("4.248"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("52.1", MC), bd("42.18", MC), bd("20.92", MC));
+		color2 = new ColorLab(bd("52", MC), bd("41", MC), bd("25", MC));
+		Testing.assertEquals(bd("4.248", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 
-		color1 = new ColorLab("70.23", "-12.36", "-13.86");
-		color2 = new ColorLab("68.2", "-13.8", "-14.4");
-		Testing.assertEquals(new BigDecimal("2.547"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("70.23", MC), bd("-12.36", MC), bd("-13.86", MC));
+		color2 = new ColorLab(bd("68.2", MC), bd("-13.8", MC), bd("-14.4", MC));
+		Testing.assertEquals(bd("2.547", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("53.13", "-34.86", "13.39");
-		color2 = new ColorLab("53", "-34", "17");
-		Testing.assertEquals(new BigDecimal("3.713"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("53.13", MC), bd("-34.86", MC), bd("13.39", MC));
+		color2 = new ColorLab(bd("53", MC), bd("-34", MC), bd("17", MC));
+		Testing.assertEquals(bd("3.713", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("65.46", "25.91", "-0.41");
-		color2 = new ColorLab("63.6", "26.4", "-0.5");
-		Testing.assertEquals(new BigDecimal("1.926"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("65.46", MC), bd("25.91", MC), bd("-0.41", MC));
+		color2 = new ColorLab(bd("63.6", MC), bd("26.4", MC), bd("-0.5", MC));
+		Testing.assertEquals(bd("1.926", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("40.65", "7.39", "-21.43");
-		color2 = new ColorLab("41", "7", "-22");
-		Testing.assertEquals(new BigDecimal("0.774"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("40.65", MC), bd("7.39", MC), bd("-21.43", MC));
+		color2 = new ColorLab(bd("41", MC), bd("7", MC), bd("-22", MC));
+		Testing.assertEquals(bd("0.774", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("80.72", "-3.89", "36.85");
-		color2 = new ColorLab("80.3", "-1.8", "34.2");
-		Testing.assertEquals(new BigDecimal("3.401"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("80.72", MC), bd("-3.89", MC), bd("36.85", MC));
+		color2 = new ColorLab(bd("80.3", MC), bd("-1.8", MC), bd("34.2", MC));
+		Testing.assertEquals(bd("3.401", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("36.23", "1.41", "4.48");
-		color2 = new ColorLab("0", "0", "0");
-		Testing.assertEquals(new BigDecimal("36.533"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("36.23", MC), bd("1.41", MC), bd("4.48", MC));
+		color2 = new ColorLab(bd("0", MC), bd("0", MC), bd("0", MC));
+		Testing.assertEquals(bd("36.533", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 
-		color1 = new ColorLab("75.61", "0.73", "4.84");
-		color2 = new ColorLab("0", "0", "0");
-		Testing.assertEquals(new BigDecimal("75.768"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("75.61", MC), bd("0.73", MC), bd("4.84", MC));
+		color2 = new ColorLab(bd("0", MC), bd("0", MC), bd("0", MC));
+		Testing.assertEquals(bd("75.768", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("57.02", "-22.23", "-29.89");
-		color2 = new ColorLab("57", "-23", "-27");
-		Testing.assertEquals(new BigDecimal("2.991"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("57.02", MC), bd("-22.23", MC), bd("-29.89", MC));
+		color2 = new ColorLab(bd("57", MC), bd("-23", MC), bd("-27", MC));
+		Testing.assertEquals(bd("2.991", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 
-		color1 = new ColorLab("62.48", "1.56", "4.18");
-		color2 = new ColorLab("0", "0", "0");
-		Testing.assertEquals(new BigDecimal("62.639"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("62.48", MC), bd("1.56", MC), bd("4.18", MC));
+		color2 = new ColorLab(bd("0", MC), bd("0", MC), bd("0", MC));
+		Testing.assertEquals(bd("62.639", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("53.94", "45.5", "0.53");
-		color2 = new ColorLab("54", "44", "-2");
-		Testing.assertEquals(new BigDecimal("2.942"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("53.94", MC), bd("45.5", MC), bd("0.53", MC));
+		color2 = new ColorLab(bd("54", MC), bd("44", MC), bd("-2", MC));
+		Testing.assertEquals(bd("2.942", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("61.31", "0.15", "3.45");
-		color2 = new ColorLab("58.6", "0.6", "4");
-		Testing.assertEquals(new BigDecimal("2.802"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("61.31", MC), bd("0.15", MC), bd("3.45", MC));
+		color2 = new ColorLab(bd("58.6", MC), bd("0.6", MC), bd("4", MC));
+		Testing.assertEquals(bd("2.802", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("79.35", "-4.04", "61.3");
-		color2 = new ColorLab("78", "-3", "58");
-		Testing.assertEquals(new BigDecimal("3.714"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("79.35", MC), bd("-4.04", MC), bd("61.3", MC));
+		color2 = new ColorLab(bd("78", MC), bd("-3", MC), bd("58", MC));
+		Testing.assertEquals(bd("3.714", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 
-		color1 = new ColorLab("51.81", "1.71", "3.13");
-		color2 = new ColorLab("0", "0", "0");
-		Testing.assertEquals(new BigDecimal("51.933"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("51.81", MC), bd("1.71", MC), bd("3.13", MC));
+		color2 = new ColorLab(bd("0", MC), bd("0", MC), bd("0", MC));
+		Testing.assertEquals(bd("51.933", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("82.63", "-0.58", "3.35");
-		color2 = new ColorLab("80", "0.01", "0.01");
-		Testing.assertEquals(new BigDecimal("4.292"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("82.63", MC), bd("-0.58", MC), bd("3.35", MC));
+		color2 = new ColorLab(bd("80", MC), bd("0.01", MC), bd("0.01", MC));
+		Testing.assertEquals(bd("4.292", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("35.61", "1.3", "2.35");
-		color2 = new ColorLab("38", "0.01", "0.01");
-		Testing.assertEquals(new BigDecimal("3.585"), Delta.E1976.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("35.61", MC), bd("1.3", MC), bd("2.35", MC));
+		color2 = new ColorLab(bd("38", MC), bd("0.01", MC), bd("0.01", MC));
+		Testing.assertEquals(bd("3.585", MC), Delta.E1976.calculate(color1, color2), DELTA, MC);
 	}
 	
 	@Test
 	@DisplayName(value = "Test: calculateDeltaE1976(ColorLab, ColorLab) with neutrality")
-	void testCalculateDeltaE1976_neutrality() throws DeltaE2000CalculationException {
-		ColorLab color = new ColorLab("52.10", "42.18", "20.92");
+	void testCalculateDeltaE1976_neutrality() {
+		ColorLab color = new ColorLab(bd("52.10", MC), bd("42.18", MC), bd("20.92", MC));
 		
 		BigDecimal dE = Delta.E1976.calculate(color, color);
 		Testing.assertEquals(BigDecimal.ZERO, dE, MC);
@@ -129,9 +167,9 @@ class ColorUtilTest {
 	
 	@Test
 	@DisplayName(value = "Test: calculateDeltaE1976(ColorLab, ColorLab) with associativity")
-	void testCalculateDeltaE1976_associativity() throws DeltaE2000CalculationException {
-		ColorLab color1 = new ColorLab("52.10", "42.18", "20.92");
-		ColorLab color2 = new ColorLab("52.00", "41.00", "25.00");
+	void testCalculateDeltaE1976_associativity() {
+		ColorLab color1 = new ColorLab(bd("52.10", MC), bd("42.18", MC), bd("20.92", MC));
+		ColorLab color2 = new ColorLab(bd("52.00", MC), bd("41.00", MC), bd("25.00", MC));
 		
 		BigDecimal dE12 = Delta.E1976.calculate(color1, color2);
 		BigDecimal dE21 = Delta.E1976.calculate(color2, color1);
@@ -140,79 +178,79 @@ class ColorUtilTest {
 	
 	@Test
 	@DisplayName(value = "Test: calculateDeltaE2000(ColorLab, ColorLab)")
-	void testCalculateDeltaE2000() throws DeltaE2000CalculationException {
+	void testCalculateDeltaE2000() {
 		ColorLab color1 = null;
 		ColorLab color2 = null;
 		
-		color1 = new ColorLab("52.1", "42.18", "20.92");
-		color2 = new ColorLab("52", "41", "25");
-		Testing.assertEquals(new BigDecimal("2.629"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("52.1", MC), bd("42.18", MC), bd("20.92", MC));
+		color2 = new ColorLab(bd("52", MC), bd("41", MC), bd("25", MC));
+		Testing.assertEquals(bd("2.629", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 
-		color1 = new ColorLab("70.23", "-12.36", "-13.86");
-		color2 = new ColorLab("68.2", "-13.8", "-14.4");
-		Testing.assertEquals(new BigDecimal("1.899"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("70.23", MC), bd("-12.36", MC), bd("-13.86", MC));
+		color2 = new ColorLab(bd("68.2", MC), bd("-13.8", MC), bd("-14.4", MC));
+		Testing.assertEquals(bd("1.899", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("53.13", "-34.86", "13.39");
-		color2 = new ColorLab("53", "-34", "17");
-		Testing.assertEquals(new BigDecimal("2.108"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("53.13", MC), bd("-34.86", MC), bd("13.39", MC));
+		color2 = new ColorLab(bd("53", MC), bd("-34", MC), bd("17", MC));
+		Testing.assertEquals(bd("2.108", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("65.46", "25.91", "-0.41");
-		color2 = new ColorLab("63.6", "26.4", "-0.5");
-		Testing.assertEquals(new BigDecimal("1.558"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("65.46", MC), bd("25.91", MC), bd("-0.41", MC));
+		color2 = new ColorLab(bd("63.6", MC), bd("26.4", MC), bd("-0.5", MC));
+		Testing.assertEquals(bd("1.558", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("40.65", "7.39", "-21.43");
-		color2 = new ColorLab("41", "7", "-22");
-		Testing.assertEquals(new BigDecimal("0.617"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("40.65", MC), bd("7.39", MC), bd("-21.43", MC));
+		color2 = new ColorLab(bd("41", MC), bd("7", MC), bd("-22", MC));
+		Testing.assertEquals(bd("0.617", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("80.72", "-3.89", "36.85");
-		color2 = new ColorLab("80.3", "-1.8", "34.2");
-		Testing.assertEquals(new BigDecimal("1.802"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("80.72", MC), bd("-3.89", MC), bd("36.85", MC));
+		color2 = new ColorLab(bd("80.3", MC), bd("-1.8", MC), bd("34.2", MC));
+		Testing.assertEquals(bd("1.802", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("36.23", "1.41", "4.48");
-		color2 = new ColorLab("0", "0", "0");
-		Testing.assertEquals(new BigDecimal("24.986"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("36.23", MC), bd("1.41", MC), bd("4.48", MC));
+		color2 = new ColorLab(bd("0", MC), bd("0", MC), bd("0", MC));
+		Testing.assertEquals(bd("24.986", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 
-		color1 = new ColorLab("75.61", "0.73", "4.84");
-		color2 = new ColorLab("0", "0", "0");
-		Testing.assertEquals(new BigDecimal("64.682"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("75.61", MC), bd("0.73", MC), bd("4.84", MC));
+		color2 = new ColorLab(bd("0", MC), bd("0", MC), bd("0", MC));
+		Testing.assertEquals(bd("64.682", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("57.02", "-22.23", "-29.89");
-		color2 = new ColorLab("57", "-23", "-27");
-		Testing.assertEquals(new BigDecimal("1.437"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("57.02", MC), bd("-22.23", MC), bd("-29.89", MC));
+		color2 = new ColorLab(bd("57", MC), bd("-23", MC), bd("-27", MC));
+		Testing.assertEquals(bd("1.437", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 
-		color1 = new ColorLab("62.48", "1.56", "4.18");
-		color2 = new ColorLab("0", "0", "0");
-		Testing.assertEquals(new BigDecimal("49.243"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("62.48", MC), bd("1.56", MC), bd("4.18", MC));
+		color2 = new ColorLab(bd("0", MC), bd("0", MC), bd("0", MC));
+		Testing.assertEquals(bd("49.243", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("53.94", "45.5", "0.53");
-		color2 = new ColorLab("54", "44", "-2");
-		Testing.assertEquals(new BigDecimal("1.430"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("53.94", MC), bd("45.5", MC), bd("0.53", MC));
+		color2 = new ColorLab(bd("54", MC), bd("44", MC), bd("-2", MC));
+		Testing.assertEquals(bd("1.430", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("61.31", "0.15", "3.45");
-		color2 = new ColorLab("58.6", "0.6", "4");
-		Testing.assertEquals(new BigDecimal("2.513"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("61.31", MC), bd("0.15", MC), bd("3.45", MC));
+		color2 = new ColorLab(bd("58.6", MC), bd("0.6", MC), bd("4", MC));
+		Testing.assertEquals(bd("2.513", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("79.35", "-4.04", "61.3");
-		color2 = new ColorLab("78", "-3", "58");
-		Testing.assertEquals(new BigDecimal("1.418"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("79.35", MC), bd("-4.04", MC), bd("61.3", MC));
+		color2 = new ColorLab(bd("78", MC), bd("-3", MC), bd("58", MC));
+		Testing.assertEquals(bd("1.418", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 
-		color1 = new ColorLab("51.81", "1.71", "3.13");
-		color2 = new ColorLab("0", "0", "0");
-		Testing.assertEquals(new BigDecimal("38.405"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("51.81", MC), bd("1.71", MC), bd("3.13", MC));
+		color2 = new ColorLab(bd("0", MC), bd("0", MC), bd("0", MC));
+		Testing.assertEquals(bd("38.405", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("82.63", "-0.58", "3.35");
-		color2 = new ColorLab("80", "0.01", "0.01");
-		Testing.assertEquals(new BigDecimal("3.674"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("82.63", MC), bd("-0.58", MC), bd("3.35", MC));
+		color2 = new ColorLab(bd("80", MC), bd("0.01", MC), bd("0.01", MC));
+		Testing.assertEquals(bd("3.674", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 		
-		color1 = new ColorLab("35.61", "1.3", "2.35");
-		color2 = new ColorLab("38", "0.01", "0.01");
-		Testing.assertEquals(new BigDecimal("3.481"), Delta.E2000.calculate(color1, color2), DELTA, MC);
+		color1 = new ColorLab(bd("35.61", MC), bd("1.3", MC), bd("2.35", MC));
+		color2 = new ColorLab(bd("38", MC), bd("0.01", MC), bd("0.01", MC));
+		Testing.assertEquals(bd("3.481", MC), Delta.E2000.calculate(color1, color2), DELTA, MC);
 	}
 	
 	@Test
 	@DisplayName(value = "Test: calculateDeltaE2000(ColorLab, ColorLab) with neutrality")
-	void testCalculateDeltaE2000_neutrality() throws DeltaE2000CalculationException {
-		ColorLab color = new ColorLab("52.10", "42.18", "20.92");
+	void testCalculateDeltaE2000_neutrality() {
+		ColorLab color = new ColorLab(bd("52.10", MC), bd("42.18", MC), bd("20.92", MC));
 		
 		BigDecimal dE = Delta.E2000.calculate(color, color);
 		Testing.assertEquals(BigDecimal.ZERO, dE, MC);
@@ -220,9 +258,9 @@ class ColorUtilTest {
 	
 	@Test
 	@DisplayName(value = "Test: calculateDeltaE2000(ColorLab, ColorLab) with associativity")
-	void testCalculateDeltaE2000_associativity() throws DeltaE2000CalculationException {
-		ColorLab color1 = new ColorLab("52.10", "42.18", "20.92");
-		ColorLab color2 = new ColorLab("52.00", "41.00", "25.00");
+	void testCalculateDeltaE2000_associativity() {
+		ColorLab color1 = new ColorLab(bd("52.10", MC), bd("42.18", MC), bd("20.92", MC));
+		ColorLab color2 = new ColorLab(bd("52.00", MC), bd("41.00", MC), bd("25.00", MC));
 		
 		BigDecimal dE12 = Delta.E2000.calculate(color1, color2);
 		BigDecimal dE21 = Delta.E2000.calculate(color2, color1);

@@ -13,7 +13,7 @@ public class MatrixValidatorAny extends MatrixValidator {
 	 * Constructor. If height is smaller than one.
 	 */
 	public MatrixValidatorAny() {
-		super(MatrixValidationType.ANY);
+		super(MatrixValidatorType.ANY);
 	}
 
 	@Override

@@ -22,50 +22,54 @@ class ColorRGBTest {
 	
 	@Test
 	@DisplayName(value = "Test: ColorRGB()")
-	void testConstructor() {
-		ColorRGB color = new ColorRGB();
+	void testColorRGB() {
+		Assertions.assertThrows(NullPointerException.class, () -> new ColorRGB(null, BigDecimal.ZERO, BigDecimal.ZERO));
+		Assertions.assertThrows(NullPointerException.class, () -> new ColorRGB(BigDecimal.ZERO, null, BigDecimal.ZERO));
+		Assertions.assertThrows(NullPointerException.class, () -> new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, null));
+		Assertions.assertDoesNotThrow(() -> new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO));
+
+		ColorRGB color = new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
 		Assertions.assertEquals(ColorType.RGB, color.getType());
 	}
 	
 	@Test
-	@DisplayName(value = "Test: getR() / setR(BigDecimal)")
+	@DisplayName(value = "Test: getR()")
 	void testGetSetR() {
-		ColorRGB color = new ColorRGB();
-		Testing.assertEquals(null, color.getR(), MC);
-		
-		color.setR(BigDecimal.ZERO);
+		ColorRGB color = new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
 		Testing.assertEquals(BigDecimal.ZERO, color.getR(), MC);
 	}
 
 	@Test
-	@DisplayName(value = "Test: getG() / setG(BigDecimal)")
+	@DisplayName(value = "Test: getG()")
 	void testGetSetG() {
-		ColorRGB color = new ColorRGB();
-		Testing.assertEquals(null, color.getG(), MC);
-		
-		color.setG(BigDecimal.ZERO);
+		ColorRGB color = new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
 		Testing.assertEquals(BigDecimal.ZERO, color.getG(), MC);
 	}
 	
 	@Test
-	@DisplayName(value = "Test: getB() / setB(BigDecimal)")
+	@DisplayName(value = "Test: getB()")
 	void testGetSetB() {
-		ColorRGB color = new ColorRGB();
-		Testing.assertEquals(null, color.getB(), MC);
-		
-		color.setB(BigDecimal.ZERO);
+		ColorRGB color = new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
 		Testing.assertEquals(BigDecimal.ZERO, color.getB(), MC);
 	}
 	
 	@Test
 	@DisplayName(value = "Test: equals(Object)")
 	void testGetColumn() {
-		ColorRGB color1 = new ColorRGB();
-		ColorRGB color2 = new ColorRGB();
-		
+		ColorRGB color1 = new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+		ColorRGB color2 = new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
 		Assertions.assertEquals(color1, color2);
+
+		ColorRGB color3 = new ColorRGB(BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO);
+		Assertions.assertNotEquals(color1, color3);
 		
-		color2.setG(BigDecimal.ZERO);
-		Assertions.assertNotEquals(color1, color2);
+		ColorRGB color4 = new ColorRGB(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO);
+		Assertions.assertNotEquals(color1, color4);
+		
+		ColorRGB color5 = new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE);
+		Assertions.assertNotEquals(color1, color5);
+		
+		ColorRGB color6 = new ColorRGB(BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE);
+		Assertions.assertNotEquals(color1, color6);
 	}
 }

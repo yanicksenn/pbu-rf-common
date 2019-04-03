@@ -9,7 +9,7 @@ import java.util.Objects;
  * @author Yanick Senn 
  */
 public abstract class MatrixValidator {
-	private final MatrixValidationType type;
+	private final MatrixValidatorType type;
 	
 	/**
 	 * Constructor with type.
@@ -18,7 +18,7 @@ public abstract class MatrixValidator {
 	 * 
 	 * @throws NullPointerException If type is not specified.
 	 */
-	public MatrixValidator(MatrixValidationType type) {
+	public MatrixValidator(MatrixValidatorType type) {
 		this.type = Objects.requireNonNull(type, "type is not specified");
 	}
 	
@@ -36,7 +36,7 @@ public abstract class MatrixValidator {
 	 * 
 	 * @return The type.
 	 */
-	public MatrixValidationType getType() {
+	public MatrixValidatorType getType() {
 		return type;
 	}
 }

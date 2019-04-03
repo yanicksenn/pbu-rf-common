@@ -5,7 +5,7 @@ package ch.pbu.rf;
  * 
  * @author Yanick Senn
  */
-public enum MatrixValidationType {
+public enum MatrixValidatorType {
 	
 	/**
 	 * Represents the exact type.

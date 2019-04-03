@@ -7,13 +7,10 @@ import java.util.Objects;
 import ch.obermuhlner.math.big.BigDecimalMath;
 import ch.pbu.rf.MathUtil;
 import ch.pbu.rf.RF;
-import ch.pbu.rf.color.deltae.DeltaE1976CalculationException;
-import ch.pbu.rf.color.deltae.DeltaE2000CalculationException;
 import ch.pbu.rf.color.lab.ColorLab;
 import ch.pbu.rf.color.rgb.ChromaticityCoordinate;
 import ch.pbu.rf.color.rgb.ColorRGB;
 import ch.pbu.rf.color.rgb.ColorSpaceRGB;
-import ch.pbu.rf.color.rgb.TransformationMatrix;
 import ch.pbu.rf.color.xyz.ColorXYZ;
 import ch.pbu.rf.illuminant.Illuminant;
 
@@ -43,7 +40,7 @@ public class ColorUtil {
 	 * 
 	 * @throws NullPointerException If illuminant is not specified.
 	 */
-	public static ColorXYZ getReferenceWhite(Illuminant illuminant) {
+	public static ColorXYZ calculateReferenceWhite(Illuminant illuminant) {
 		Objects.requireNonNull(illuminant, "illuminant is not specified");
 
 		BigDecimal ix = illuminant.getX();
@@ -54,7 +51,8 @@ public class ColorUtil {
 		BigDecimal x = ix.multiply(y, MC).divide(iy, MC);
 		BigDecimal z = iz.multiply(y, MC).divide(iy, MC);
 
-		return new ColorXYZ(x, y, z);
+		ColorXYZ result = new ColorXYZ(x, y, z);
+		return result;
 	}
 
 	/**
@@ -76,7 +74,7 @@ public class ColorUtil {
 		BigDecimal a = color.getA();
 		BigDecimal b = color.getB();
 
-		ColorXYZ rw = getReferenceWhite(illuminant);
+		ColorXYZ rw = calculateReferenceWhite(illuminant);
 		BigDecimal rx = rw.getX();
 		BigDecimal ry = rw.getY();
 		BigDecimal rz = rw.getZ();
@@ -112,9 +110,9 @@ public class ColorUtil {
 		BigDecimal g = color.getG();
 		BigDecimal b = color.getB();
 		
-		ColorXYZ referenceWhite = getReferenceWhite(illuminant);
+		ColorXYZ referenceWhite = calculateReferenceWhite(illuminant);
 		
-		BigDecimal[][] matrice = new BigDecimal[][] {
+		BigDecimal[][] matrice = {
 			{ null, null, null },
 			{ null, null, null },
 			{ null, null, null }
@@ -142,7 +140,7 @@ public class ColorUtil {
 		BigDecimal y = color.getY();
 		BigDecimal z = color.getZ();
 
-		ColorXYZ rw = getReferenceWhite(illuminant);
+		ColorXYZ rw = calculateReferenceWhite(illuminant);
 		BigDecimal rx = rw.getX();
 		BigDecimal ry = rw.getY();
 		BigDecimal rz = rw.getZ();
@@ -170,7 +168,7 @@ public class ColorUtil {
 	 * @throws NullPointerException If colorSpace is not specified.
 	 * @throws NullPointerException If illuminant is not specified.
 	 */
-	public static TransformationMatrix calculateRGBTransformationMatrix(ColorSpaceRGB colorSpace, Illuminant illuminant) throws NullPointerException {
+	public static BigDecimal[][] calculateRGBTransformationMatrix(ColorSpaceRGB colorSpace, Illuminant illuminant) throws NullPointerException {
 		Objects.requireNonNull(colorSpace, "colorSpace is not specified");
 		Objects.requireNonNull(illuminant, "illuminant is not specified");
 		
@@ -186,16 +184,16 @@ public class ColorUtil {
 		BigDecimal ccbx = b.getX();
 		BigDecimal ccby = b.getY();
 		
-		ColorXYZ referenceWhite = getReferenceWhite(illuminant);
-		BigDecimal xw = referenceWhite.getX();
-		BigDecimal yw = referenceWhite.getY();
-		BigDecimal zw = referenceWhite.getZ();
-		
-		// M 
+		ColorXYZ rw = calculateReferenceWhite(illuminant);
+		BigDecimal[][] matrixRw = { 
+			{ rw.getX() },
+			{ rw.getY() },
+			{ rw.getZ() } 
+		};
 		
 		BigDecimal xr = ccrx.divide(ccry, MC);
-		BigDecimal xg = ccrx.divide(ccgy, MC);
-		BigDecimal xb = ccrx.divide(ccby, MC);
+		BigDecimal xg = ccgx.divide(ccgy, MC);
+		BigDecimal xb = ccbx.divide(ccby, MC);
 
 		BigDecimal yr = BigDecimal.ONE;
 		BigDecimal yg = BigDecimal.ONE;
@@ -205,54 +203,22 @@ public class ColorUtil {
 		BigDecimal zg = BigDecimal.ONE.subtract(ccgx, MC).subtract(ccgy, MC).divide(ccgy, MC);
 		BigDecimal zb = BigDecimal.ONE.subtract(ccbx, MC).subtract(ccby, MC).divide(ccby, MC);
 		
-		BigDecimal[][] matrix = new BigDecimal[][] {
+		BigDecimal[][] matrix = {
 			{ xr, xg, xb },
 			{ yr, yg, yb },
 			{ zr, zg, zb }
 		};
 		
-		// M^(-1)
-		
 		BigDecimal[][] matrixInversed = MathUtil.calculate3x3Inverse(matrix, MC);
-		matrixInversed[0][0] = matrixInversed[0][0].multiply(xw);
-		matrixInversed[0][1] = matrixInversed[0][1].multiply(yw);
-		matrixInversed[0][2] = matrixInversed[0][2].multiply(zw);
-		matrixInversed[1][0] = matrixInversed[1][0].multiply(xw);
-		matrixInversed[1][1] = matrixInversed[1][1].multiply(yw);
-		matrixInversed[1][2] = matrixInversed[1][2].multiply(zw);
-		matrixInversed[2][0] = matrixInversed[2][0].multiply(xw);
-		matrixInversed[2][1] = matrixInversed[2][1].multiply(yw);
-		matrixInversed[2][2] = matrixInversed[2][2].multiply(zw);
+		BigDecimal[][] matrixSrgb = MathUtil.calculateProduct(matrixInversed, matrixRw, MC);
 		
-		// xr yr zr
-		// xg yg zg
-		// xb yb zb
+		BigDecimal[][] result = {
+			{ matrix[0][0].multiply(matrixSrgb[0][0], MC), matrix[0][1].multiply(matrixSrgb[1][0], MC), matrix[0][2].multiply(matrixSrgb[2][0], MC) },
+			{ matrix[1][0].multiply(matrixSrgb[0][0], MC), matrix[1][1].multiply(matrixSrgb[1][0], MC), matrix[1][2].multiply(matrixSrgb[2][0], MC) },
+			{ matrix[2][0].multiply(matrixSrgb[0][0], MC), matrix[2][1].multiply(matrixSrgb[1][0], MC), matrix[2][2].multiply(matrixSrgb[2][0], MC) }
+		};
 		
-		BigDecimal dxr = MathUtil.calculate2x2Determinant(yg, zg, yb, zb, MC);
-		BigDecimal dyr = MathUtil.calculate2x2Determinant(xg, zg, xb, zb, MC);
-		BigDecimal dzr = MathUtil.calculate2x2Determinant(xg, yg, xb, yb, MC);
-		
-		BigDecimal dxg = MathUtil.calculate2x2Determinant(yr, zr, yb, zb, MC);
-		BigDecimal dyg = MathUtil.calculate2x2Determinant(xr, zr, xb, zb, MC);
-		BigDecimal dzg = MathUtil.calculate2x2Determinant(xr, yr, xb, yb, MC);
-		
-		BigDecimal dxb = MathUtil.calculate2x2Determinant(yr, zr, yg, zg, MC);
-		BigDecimal dyb = MathUtil.calculate2x2Determinant(xr, zr, xg, zg, MC);
-		BigDecimal dzb = MathUtil.calculate2x2Determinant(xr, yr, xg, yg, MC);
-		
-		// Multiply
-		
-		// + - +
-		// - + -
-		// + - +
-
-		dyr = dyr.negate(MC);
-		dxg = dxg.negate(MC);
-		dzg = dzg.negate(MC);
-		dyb = dyb.negate(MC);
-		
-		return null;
-		
+		return result;
 	}
 
 	/**
@@ -267,25 +233,20 @@ public class ColorUtil {
 	 * @throws NullPointerException If color2 is not specified.
 	 * @throws DeltaE1976CalculationException If it is not possible to calculate the delta E1976.
 	 */
-	public static BigDecimal calculateDeltaE1976(ColorLab color1, ColorLab color2) throws NullPointerException, DeltaE1976CalculationException {
+	public static BigDecimal calculateDeltaE1976(ColorLab color1, ColorLab color2) throws NullPointerException {
 		Objects.requireNonNull(color1, "color1 is not specified");
 		Objects.requireNonNull(color2, "color2 is not specified");
 		
-		try {
-			BigDecimal color1L = replaceZeroWithNearlyZero(color1.getL(), MC);
-			BigDecimal color1a = replaceZeroWithNearlyZero(color1.getA(), MC);
-			BigDecimal color1b = replaceZeroWithNearlyZero(color1.getB(), MC);
+		BigDecimal color1L = replaceZeroWithNearlyZero(color1.getL(), MC);
+		BigDecimal color1a = replaceZeroWithNearlyZero(color1.getA(), MC);
+		BigDecimal color1b = replaceZeroWithNearlyZero(color1.getB(), MC);
 
-			BigDecimal color2L = replaceZeroWithNearlyZero(color2.getL(), MC);
-			BigDecimal color2a = replaceZeroWithNearlyZero(color2.getA(), MC);
-			BigDecimal color2b = replaceZeroWithNearlyZero(color2.getB(), MC);
+		BigDecimal color2L = replaceZeroWithNearlyZero(color2.getL(), MC);
+		BigDecimal color2a = replaceZeroWithNearlyZero(color2.getA(), MC);
+		BigDecimal color2b = replaceZeroWithNearlyZero(color2.getB(), MC);
 
-			BigDecimal result = calculateDeltaE1976(color1L, color1a, color1b, color2L, color2a, color2b, MC);
-			return result;
-			
-		} catch (ArithmeticException e) {
-			throw new DeltaE1976CalculationException(color1, color2, e);
-		}
+		BigDecimal result = calculateDeltaE1976(color1L, color1a, color1b, color2L, color2a, color2b, MC);
+		return result;
 	}
 	
 	public static BigDecimal calculateDeltaE1976(BigDecimal l1, BigDecimal a1, BigDecimal b1, BigDecimal l2, BigDecimal a2, BigDecimal b2, MathContext mc) {
@@ -315,60 +276,55 @@ public class ColorUtil {
 	 * 
 	 * @throws DeltaE2000CalculationException If it is not possible to calculate the delta E2000.
 	 */
-	public static BigDecimal calculateDeltaE2000(ColorLab color1, ColorLab color2) throws DeltaE2000CalculationException {
+	public static BigDecimal calculateDeltaE2000(ColorLab color1, ColorLab color2) {
 		Objects.requireNonNull(color1, "color1 is not specified");
 		Objects.requireNonNull(color2, "color2 is not specified");
 		
-		try {
-			BigDecimal color1L = replaceZeroWithNearlyZero(color1.getL(), MC);
-			BigDecimal color1a = replaceZeroWithNearlyZero(color1.getA(), MC);
-			BigDecimal color1b = replaceZeroWithNearlyZero(color1.getB(), MC);
+		BigDecimal color1L = replaceZeroWithNearlyZero(color1.getL(), MC);
+		BigDecimal color1a = replaceZeroWithNearlyZero(color1.getA(), MC);
+		BigDecimal color1b = replaceZeroWithNearlyZero(color1.getB(), MC);
 
-			BigDecimal color2L = replaceZeroWithNearlyZero(color2.getL(), MC);
-			BigDecimal color2a = replaceZeroWithNearlyZero(color2.getA(), MC);
-			BigDecimal color2b = replaceZeroWithNearlyZero(color2.getB(), MC);
-			
-			BigDecimal g = calculateG(color1a, color1b, color2a, color2b, MC);
+		BigDecimal color2L = replaceZeroWithNearlyZero(color2.getL(), MC);
+		BigDecimal color2a = replaceZeroWithNearlyZero(color2.getA(), MC);
+		BigDecimal color2b = replaceZeroWithNearlyZero(color2.getB(), MC);
+		
+		BigDecimal g = calculateG(color1a, color1b, color2a, color2b, MC);
 
-			BigDecimal a1 = calculateA(g, color1a, MC);
-			BigDecimal b1 = calculateB(color1b, MC); 
-			BigDecimal c1 = calculateC(a1, b1, MC);
-			BigDecimal h1 = calculateH(a1, color1b, MC);
-			
-			BigDecimal a2 = calculateA(g, color2a, MC);
-			BigDecimal b2 = calculateB(color2b, MC); 
-			BigDecimal c2 = calculateC(a2, b2, MC);
-			BigDecimal h2 = calculateH(a2, color2b, MC);
-			
-			BigDecimal meanL = calculateMeanL(color1L, color2L, MC);
-			BigDecimal meanC = calculateMeanC(c1, c2, MC);
-			BigDecimal meanH = calculateMeanH(h1, h2, MC);
+		BigDecimal a1 = calculateA(g, color1a, MC);
+		BigDecimal b1 = calculateB(color1b, MC); 
+		BigDecimal c1 = calculateC(a1, b1, MC);
+		BigDecimal h1 = calculateH(a1, color1b, MC);
+		
+		BigDecimal a2 = calculateA(g, color2a, MC);
+		BigDecimal b2 = calculateB(color2b, MC); 
+		BigDecimal c2 = calculateC(a2, b2, MC);
+		BigDecimal h2 = calculateH(a2, color2b, MC);
+		
+		BigDecimal meanL = calculateMeanL(color1L, color2L, MC);
+		BigDecimal meanC = calculateMeanC(c1, c2, MC);
+		BigDecimal meanH = calculateMeanH(h1, h2, MC);
 
-			BigDecimal dL = calculateDeltaL(color1L, color2L, MC);
-			BigDecimal dC = calculateDeltaC(c1, c2, MC);
-			BigDecimal dH = calculateDeltaH(c1, c2, h1, h2, MC);
-			
-			BigDecimal T = calculateT(meanH, MC);
+		BigDecimal dL = calculateDeltaL(color1L, color2L, MC);
+		BigDecimal dC = calculateDeltaC(c1, c2, MC);
+		BigDecimal dH = calculateDeltaH(c1, c2, h1, h2, MC);
+		
+		BigDecimal T = calculateT(meanH, MC);
 
-			BigDecimal SL = calculateSL(meanL, MC);
-			BigDecimal SC = calculateSC(meanC, MC);
-			BigDecimal SH = calculateSH(meanC, T, MC);
+		BigDecimal SL = calculateSL(meanL, MC);
+		BigDecimal SC = calculateSC(meanC, MC);
+		BigDecimal SH = calculateSH(meanC, T, MC);
 
-			BigDecimal d0 = calculateD0(meanH , MC);
+		BigDecimal d0 = calculateD0(meanH , MC);
 
-			BigDecimal RC = calculateRC(meanC, MC);
-			BigDecimal RT = calculateRT(RC, d0, MC);
-					
-			BigDecimal KL = BigDecimal.ONE;
-			BigDecimal KC = BigDecimal.ONE;
-			BigDecimal KH = BigDecimal.ONE;
+		BigDecimal RC = calculateRC(meanC, MC);
+		BigDecimal RT = calculateRT(RC, d0, MC);
+				
+		BigDecimal KL = BigDecimal.ONE;
+		BigDecimal KC = BigDecimal.ONE;
+		BigDecimal KH = BigDecimal.ONE;
 
-			BigDecimal dE = calculateDeltaE2000(dL, dC, dH, KL, KC, KH, SL, SC, SH, RT, MC);
-			return dE;
-			
-		} catch (ArithmeticException e) {
-			throw new DeltaE2000CalculationException(color1, color2, e);
-		}
+		BigDecimal dE = calculateDeltaE2000(dL, dC, dH, KL, KC, KH, SL, SC, SH, RT, MC);
+		return dE;
 	}
 	
 	public static BigDecimal calculateG(BigDecimal a1, BigDecimal b1, BigDecimal a2, BigDecimal b2, MathContext mc) {

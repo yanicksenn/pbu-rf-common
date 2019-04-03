@@ -3,108 +3,65 @@ package ch.pbu.rf.color.rgb;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
-
 import ch.pbu.rf.color.Color;
 import ch.pbu.rf.color.ColorType;
-import ch.yanicksenn.metamodel.MetaModel;
 import ch.yanicksenn.util.Util;
 
 /**
- * Represents the Color-RGB.
+ * Represents the color rgb.
  * 
  * @author Yanick Senn
  */
-@MetaModel
 public class ColorRGB extends Color {
-	
-	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_NULL)
-	@DecimalMin(value = ColorRGBValidator.R_MIN_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_MIN)
-	@DecimalMax(value = ColorRGBValidator.R_MAX_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_R_MAX)
-	private BigDecimal r;
-
-	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_NULL)
-	@DecimalMin(value = ColorRGBValidator.G_MIN_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_MIN)
-	@DecimalMax(value = ColorRGBValidator.G_MAX_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_G_MAX)
-	private BigDecimal g;
-
-	@NotNull(message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_NULL)
-	@DecimalMin(value = ColorRGBValidator.B_MIN_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_MIN)
-	@DecimalMax(value = ColorRGBValidator.B_MAX_STRING, message = ColorRGBValidator.LABEL_COLOR_RGB_INVALID_B_MAX)
-	private BigDecimal b;
+	private final BigDecimal r;
+	private final BigDecimal g;
+	private final BigDecimal b;
 	
 	
 	/**
-	 * Constructor.
+	 * Constructor with r, g and b.
+	 * 
+	 * @param r R.
+	 * @param g G.
+	 * @param b B.
+	 * 
+	 * @throws NullPointerException If r is not specified.
+	 * @throws NullPointerException If g is not specified.
+	 * @throws NullPointerException If b is not specified.
 	 */
-	public ColorRGB() {
+	public ColorRGB(BigDecimal r, BigDecimal g, BigDecimal b) {
 		super(ColorType.RGB);
+		this.r = Objects.requireNonNull(r, "r is not specified");
+		this.g = Objects.requireNonNull(g, "g is not specified");
+		this.b = Objects.requireNonNull(b, "b is not specified");
 	}
 	
 	
 	/**
-	 * Returns the r value.
+	 * Returns the r.
 	 * 
-	 * @return R value.
+	 * @return R.
 	 */
 	public BigDecimal getR() {
 		return r;
 	}
 	
 	/**
-	 * Sets the r value.
+	 * Returns the g.
 	 * 
-	 * @param r R value.
-	 * 
-	 * @return This instance.
-	 */
-	public ColorRGB setR(BigDecimal r) {
-		this.r = r;
-		return this;
-	}
-	
-	/**
-	 * Returns the g value.
-	 * 
-	 * @return G value.
+	 * @return G.
 	 */
 	public BigDecimal getG() {
 		return g;
 	}
-
-	/**
-	 * Sets the g value.
-	 * 
-	 * @param g G value.
-	 * 
-	 * @return This instance.
-	 */
-	public ColorRGB setG(BigDecimal g) {
-		this.g = g;
-		return this;
-	}
 	
 	/**
-	 * Returns the b value.
+	 * Returns the b.
 	 * 
-	 * @return B value.
+	 * @return B.
 	 */
 	public BigDecimal getB() {
 		return b;
-	}
-	
-	/**
-	 * Sets the b value.
-	 * 
-	 * @param b B value.
-	 * 
-	 * @return This instance.
-	 */
-	public ColorRGB setB(BigDecimal b) {
-		this.b = b;
-		return this;
 	}
 
 	

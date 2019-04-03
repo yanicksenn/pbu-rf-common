@@ -17,7 +17,7 @@ public enum Delta implements DeltaECalculatorDelegate {
 	 */
 	E1976() {
 		@Override
-		public BigDecimal calculate(ColorLab color1, ColorLab color2) throws DeltaECalculationException {
+		public BigDecimal calculate(ColorLab color1, ColorLab color2) {
 			return ColorUtil.calculateDeltaE1976(color1, color2);
 		}
 		
@@ -28,7 +28,7 @@ public enum Delta implements DeltaECalculatorDelegate {
 	 */
 	E2000() {
 		@Override
-		public BigDecimal calculate(ColorLab color1, ColorLab color2) throws DeltaECalculationException {
+		public BigDecimal calculate(ColorLab color1, ColorLab color2) {
 			return ColorUtil.calculateDeltaE2000(color1, color2);
 		}
 		

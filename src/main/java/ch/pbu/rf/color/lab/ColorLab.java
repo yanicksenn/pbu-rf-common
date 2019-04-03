@@ -49,21 +49,6 @@ public class ColorLab extends Color {
 		this.b = b;
 	}
 	
-	/**
-	 * Constructor with <I>L</I>, <I>a</I> and <I>b</I> value as string.
-	 * 
-	 * @param l L value.
-	 * @param a A value.
-	 * @param b B value.
-	 */
-	public ColorLab(String l, String a, String b) {
-		this(
-			l != null ? new BigDecimal(l) : null, 
-			a != null ? new BigDecimal(a) : null, 
-			b != null ? new BigDecimal(b) : null
-		);
-	}
-	
 	
 	/**
 	 * Returns the l value.

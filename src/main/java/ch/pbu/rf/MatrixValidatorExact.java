@@ -34,7 +34,7 @@ public class MatrixValidatorExact extends MatrixValidator {
 	 * @throws IllegalArgumentException If height is smaller than one.
 	 */
 	public MatrixValidatorExact(int width, int height) {
-		super(MatrixValidationType.EXACT);
+		super(MatrixValidatorType.EXACT);
 		
 		if (width < 1) {
 			throw new IllegalArgumentException("width should not be smaller than 1");

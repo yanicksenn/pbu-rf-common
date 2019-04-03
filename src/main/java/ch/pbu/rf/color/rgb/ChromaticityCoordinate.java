@@ -3,9 +3,6 @@ package ch.pbu.rf.color.rgb;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import javax.validation.constraints.NotNull;
-
-import ch.yanicksenn.metamodel.MetaModel;
 import ch.yanicksenn.util.Util;
 
 /**
@@ -13,56 +10,40 @@ import ch.yanicksenn.util.Util;
  * 
  * @author Yanick Senn
  */
-@MetaModel
 public class ChromaticityCoordinate {
-	
-	@NotNull(message = ChromaticityCoordinateValidator.LABEL_COLOR_RGB_CC_INVALID_X_NULL)
-	private BigDecimal x;
-
-	@NotNull(message = ChromaticityCoordinateValidator.LABEL_COLOR_RGB_CC_INVALID_X_NULL)
-	private BigDecimal y;
-	
+	private final BigDecimal x;
+	private final BigDecimal y;
 	
 	/**
-	 * Returns the x value.
+	 * Constructor with x and y.
 	 * 
-	 * @return X value.
+	 * @param x X.
+	 * @param y Y.
+	 * 
+	 * @throws NullPointerException If x is not specified.
+	 * @throws NullPointerException If y is not specified.
+	 */
+	public ChromaticityCoordinate(BigDecimal x, BigDecimal y) {
+		this.x = Objects.requireNonNull(x, "x is not specified");
+		this.y = Objects.requireNonNull(y, "y is not specified");
+	}
+	
+	/**
+	 * Returns the x.
+	 * 
+	 * @return X.
 	 */
 	public BigDecimal getX() {
 		return x;
 	}
 	
 	/**
-	 * Sets the x value.
+	 * Returns the y.
 	 * 
-	 * @param x X value.
-	 * 
-	 * @return This instance.
-	 */
-	public ChromaticityCoordinate setX(BigDecimal x) {
-		this.x = x;
-		return this;
-	}
-	
-	/**
-	 * Returns the y value.
-	 * 
-	 * @return Y value.
+	 * @return Y.
 	 */
 	public BigDecimal getY() {
 		return y;
-	}
-	
-	/**
-	 * Sets the y value.
-	 * 
-	 * @param y Y value.
-	 * 
-	 * @return This instance.
-	 */
-	public ChromaticityCoordinate setY(BigDecimal y) {
-		this.y = y;
-		return this;
 	}
 	
 	

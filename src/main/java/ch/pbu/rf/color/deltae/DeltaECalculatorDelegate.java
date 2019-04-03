@@ -21,7 +21,6 @@ public interface DeltaECalculatorDelegate {
 	 * 
 	 * @throws NullPointerException If color1 is not specified.
 	 * @throws NullPointerException If color2 is not specified.
-	 * @throws DeltaECalculationException If it is not possible to calculate the delta E.
 	 */
-	BigDecimal calculate(ColorLab color1, ColorLab color2) throws DeltaECalculationException;
+	BigDecimal calculate(ColorLab color1, ColorLab color2);
 }

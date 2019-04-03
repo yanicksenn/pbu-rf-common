@@ -1,26 +1,73 @@
 package ch.pbu.rf.color.rgb;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
+import ch.pbu.rf.color.ColorType;
 import ch.pbu.rf.color.space.ColorSpace;
-import ch.pbu.rf.color.space.ColorSpaceType;
 
 /**
- * Represents the RGB-color-space.
+ * Represents the color space rgb.
  * 
  * @author Yanick Senn
  */
 public class ColorSpaceRGB extends ColorSpace {
-	private ChromaticityCoordinate r;
-	private ChromaticityCoordinate g;
-	private ChromaticityCoordinate b;
+	private final ChromaticityCoordinate r;
+	private final ChromaticityCoordinate g;
+	private final ChromaticityCoordinate b;
 	
+
+	/**
+	 * Constructor with name, rx, ry, gx, gy, bx and by.
+	 * 
+	 * @param name Name.
+	 * @param rx Rx.
+	 * @param ry Ry.
+	 * @param gx Gx.
+	 * @param gy Gy.
+	 * @param bx Bx.
+	 * @param by By.
+	 * 
+	 * @throws NullPointerException If name is not specified.
+	 * @throws NullPointerException If rx is not specified.
+	 * @throws NullPointerException If ry is not specified.
+	 * @throws NullPointerException If gx is not specified.
+	 * @throws NullPointerException If gy is not specified.
+	 * @throws NullPointerException If bx is not specified.
+	 * @throws NullPointerException If by is not specified.
+	 */
+	public ColorSpaceRGB(String name, BigDecimal rx, BigDecimal ry, BigDecimal gx, BigDecimal gy, BigDecimal bx, BigDecimal by) {
+		super(name, ColorType.RGB);
+		Objects.requireNonNull(rx, "rx is not specified");
+		Objects.requireNonNull(ry, "ry is not specified");
+		Objects.requireNonNull(gx, "gx is not specified");
+		Objects.requireNonNull(gy, "gy is not specified");
+		Objects.requireNonNull(bx, "bx is not specified");
+		Objects.requireNonNull(by, "by is not specified");
+		
+		this.r = new ChromaticityCoordinate(rx, ry);
+		this.g = new ChromaticityCoordinate(gx, gy);
+		this.b = new ChromaticityCoordinate(bx, by);
+	}
 	
 	/**
-	 * Constructor.
+	 * Constructor with name, r, g and b.
+	 * 
+	 * @param name Name.
+	 * @param r R.
+	 * @param g G.
+	 * @param b B.
+	 * 
+	 * @throws NullPointerException If name is not specified.
+	 * @throws NullPointerException If r is not specified.
+	 * @throws NullPointerException If g is not specified.
+	 * @throws NullPointerException If b is not specified.
 	 */
-	public ColorSpaceRGB() {
-		super(ColorSpaceType.RGB);
+	public ColorSpaceRGB(String name, ChromaticityCoordinate r, ChromaticityCoordinate g, ChromaticityCoordinate b) {
+		super(name, ColorType.RGB);
+		this.r = Objects.requireNonNull(r, "r is not specified");
+		this.g = Objects.requireNonNull(g, "g is not specified");
+		this.b = Objects.requireNonNull(b, "b is not specified");
 	}
 	
 	
@@ -34,36 +81,12 @@ public class ColorSpaceRGB extends ColorSpace {
 	}
 	
 	/**
-	 * Sets the r coordinate.
-	 * 
-	 * @param r R coordinate.
-	 * 
-	 * @return This instance.
-	 */
-	public ColorSpaceRGB setR(ChromaticityCoordinate r) {
-		this.r = r;
-		return this;
-	}
-
-	/**
 	 * Returns the g coordinate.
 	 * 
 	 * @return G coordinate.
 	 */
 	public ChromaticityCoordinate getG() {
 		return g;
-	}
-	
-	/**
-	 * Sets the g coordinate.
-	 * 
-	 * @param g G coordinate.
-	 * 
-	 * @return This instance.
-	 */
-	public ColorSpaceRGB setG(ChromaticityCoordinate g) {
-		this.g = g;
-		return this;
 	}
 
 	/**
@@ -74,41 +97,21 @@ public class ColorSpaceRGB extends ColorSpace {
 	public ChromaticityCoordinate getB() {
 		return b;
 	}
-
-	/**
-	 * Sets the b coordinate.
-	 * 
-	 * @param b B coordinate.
-	 * 
-	 * @return This instance.
-	 */
-	public ColorSpaceRGB setB(ChromaticityCoordinate b) {
-		this.b = b;
-		return this;
-	}
 	
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(r, g, b);
+		return Objects.hash(super.hashCode(), r, g, b);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		
-		if (obj == null) {
+		if (!super.equals(obj)) {
 			return false;
 		}
-		
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		
-		ColorSpaceRGB other = (ColorSpaceRGB) obj;
 
+		ColorSpaceRGB other = (ColorSpaceRGB) obj;
+		
 		return 
 			Objects.equals(this.r, other.r) &&
 			Objects.equals(this.g, other.g) &&

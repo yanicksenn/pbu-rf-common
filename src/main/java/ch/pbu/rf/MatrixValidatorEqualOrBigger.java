@@ -34,7 +34,7 @@ public class MatrixValidatorEqualOrBigger extends MatrixValidator {
 	 * @throws IllegalArgumentException If height is smaller than one.
 	 */
 	public MatrixValidatorEqualOrBigger(int width, int height) {
-		super(MatrixValidationType.EQUAL_OR_BIGGER);
+		super(MatrixValidatorType.EQUAL_OR_BIGGER);
 		
 		if (width < 1) {
 			throw new IllegalArgumentException("width should not be smaller than 1");
