@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import ch.pbu.rf.color.ColorType;
 import ch.pbu.rf.color.space.ColorSpace;
+import ch.pbu.rf.illuminant.Illuminant;
 
 /**
  * Represents the color space rgb.
@@ -12,15 +13,17 @@ import ch.pbu.rf.color.space.ColorSpace;
  * @author Yanick Senn
  */
 public class ColorSpaceRGB extends ColorSpace {
+	private final Illuminant illuminant;
 	private final ChromaticityCoordinate r;
 	private final ChromaticityCoordinate g;
 	private final ChromaticityCoordinate b;
 	
 
 	/**
-	 * Constructor with name, rx, ry, gx, gy, bx and by.
+	 * Constructor with name, illuminant, rx, ry, gx, gy, bx and by.
 	 * 
 	 * @param name Name.
+	 * @param illuminant Illuminant.
 	 * @param rx Rx.
 	 * @param ry Ry.
 	 * @param gx Gx.
@@ -29,6 +32,7 @@ public class ColorSpaceRGB extends ColorSpace {
 	 * @param by By.
 	 * 
 	 * @throws NullPointerException If name is not specified.
+	 * @throws NullPointerException If illuminant is not specified.
 	 * @throws NullPointerException If rx is not specified.
 	 * @throws NullPointerException If ry is not specified.
 	 * @throws NullPointerException If gx is not specified.
@@ -36,17 +40,20 @@ public class ColorSpaceRGB extends ColorSpace {
 	 * @throws NullPointerException If bx is not specified.
 	 * @throws NullPointerException If by is not specified.
 	 */
-	public ColorSpaceRGB(String name, BigDecimal rx, BigDecimal ry, BigDecimal gx, BigDecimal gy, BigDecimal bx, BigDecimal by) {
+	public ColorSpaceRGB(String name, Illuminant illuminant, BigDecimal rx, BigDecimal ry, BigDecimal gx, BigDecimal gy, BigDecimal bx, BigDecimal by) {
 		super(name, ColorType.RGB);
+		this.illuminant = Objects.requireNonNull(illuminant, "illuminant is not specified");
+		
 		Objects.requireNonNull(rx, "rx is not specified");
 		Objects.requireNonNull(ry, "ry is not specified");
+		this.r = new ChromaticityCoordinate(rx, ry);
+		
 		Objects.requireNonNull(gx, "gx is not specified");
 		Objects.requireNonNull(gy, "gy is not specified");
+		this.g = new ChromaticityCoordinate(gx, gy);
+		
 		Objects.requireNonNull(bx, "bx is not specified");
 		Objects.requireNonNull(by, "by is not specified");
-		
-		this.r = new ChromaticityCoordinate(rx, ry);
-		this.g = new ChromaticityCoordinate(gx, gy);
 		this.b = new ChromaticityCoordinate(bx, by);
 	}
 	
@@ -63,13 +70,23 @@ public class ColorSpaceRGB extends ColorSpace {
 	 * @throws NullPointerException If g is not specified.
 	 * @throws NullPointerException If b is not specified.
 	 */
-	public ColorSpaceRGB(String name, ChromaticityCoordinate r, ChromaticityCoordinate g, ChromaticityCoordinate b) {
+	public ColorSpaceRGB(String name, Illuminant illuminant, ChromaticityCoordinate r, ChromaticityCoordinate g, ChromaticityCoordinate b) {
 		super(name, ColorType.RGB);
+		this.illuminant = Objects.requireNonNull(illuminant, "illuminant is not specified");
 		this.r = Objects.requireNonNull(r, "r is not specified");
 		this.g = Objects.requireNonNull(g, "g is not specified");
 		this.b = Objects.requireNonNull(b, "b is not specified");
 	}
 	
+	
+	/**
+	 * Returns the illuminant.
+	 * 
+	 * @return The illuminant.
+	 */
+	public Illuminant getIlluminant() {
+		return illuminant;
+	}
 	
 	/**
 	 * Returns the r coordinate.

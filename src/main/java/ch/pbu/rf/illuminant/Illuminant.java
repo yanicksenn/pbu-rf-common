@@ -37,6 +37,8 @@ public class Illuminant {
 		this.y = Objects.requireNonNull(y, "y is not specified");
 		this.mc = Objects.requireNonNull(mc, "mc is not specified");
 		this.cct = cct;
+		
+		// https://github.com/anderslanglands/colorspace-rs/blob/master/src/illuminant.rs
 	}
 	
 	/**

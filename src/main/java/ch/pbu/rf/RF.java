@@ -55,6 +55,8 @@ public final class RF {
 		public static final Illuminant F12 = new Illuminant("F12", 1931, 2, bd("0.43695"), bd("0.40441"), MC, 3000);
 		
 		
+		
+		
 		private static final List<Illuminant> illuminants = new ArrayList<>();
 		
 		
@@ -192,10 +194,10 @@ public final class RF {
 		public static final class ColorSpace {
 			//                                Name   Year  A  X              Y              M   CCT
 			// ---------------------------------------------------------------------------------------------------------
-			public static final ColorSpaceRGB sRGB     = new ColorSpaceRGB("Standard RGB", bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
-			public static final ColorSpaceRGB AdobeRGB = new ColorSpaceRGB("Adobe RGB",    bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
-			public static final ColorSpaceRGB AppleRGB = new ColorSpaceRGB("Apple RGB",    bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
-			public static final ColorSpaceRGB CIERGB   = new ColorSpaceRGB("CIE RGB",      bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
+			public static final ColorSpaceRGB sRGB     = new ColorSpaceRGB("Standard RGB", CIE1931.D50, bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
+//			public static final ColorSpaceRGB AdobeRGB = new ColorSpaceRGB("Adobe RGB",    bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
+//			public static final ColorSpaceRGB AppleRGB = new ColorSpaceRGB("Apple RGB",    bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
+//			public static final ColorSpaceRGB CIERGB   = new ColorSpaceRGB("CIE RGB",      bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
 			
 			/**
 			 * Private constructor.

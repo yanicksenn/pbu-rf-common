@@ -166,11 +166,9 @@ public class ColorUtil {
 	 * @return
 	 * 
 	 * @throws NullPointerException If colorSpace is not specified.
-	 * @throws NullPointerException If illuminant is not specified.
 	 */
-	public static BigDecimal[][] calculateRGBTransformationMatrix(ColorSpaceRGB colorSpace, Illuminant illuminant) throws NullPointerException {
+	public static BigDecimal[][] calculateRGBTransformationMatrix(ColorSpaceRGB colorSpace) throws NullPointerException {
 		Objects.requireNonNull(colorSpace, "colorSpace is not specified");
-		Objects.requireNonNull(illuminant, "illuminant is not specified");
 		
 		ChromaticityCoordinate r = colorSpace.getR();
 		BigDecimal ccrx = r.getX();
@@ -184,6 +182,7 @@ public class ColorUtil {
 		BigDecimal ccbx = b.getX();
 		BigDecimal ccby = b.getY();
 		
+		Illuminant illuminant = colorSpace.getIlluminant();
 		ColorXYZ rw = calculateReferenceWhite(illuminant);
 		BigDecimal[][] matrixRw = { 
 			{ rw.getX() },

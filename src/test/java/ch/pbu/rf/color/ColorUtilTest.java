@@ -72,17 +72,16 @@ class ColorUtilTest {
 	}
 	
 	@Test
-	@DisplayName(value = "Test: calculateRGBTransformationMatrix(ColorSpaceRGB, Illuminant) - Exceptions")
+	@DisplayName(value = "Test: calculateRGBTransformationMatrix(ColorSpaceRGB) - Exceptions")
 	void testCalculateRGBTransformationMatrix_exceptions() {
-		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.calculateRGBTransformationMatrix(null, RF.CIE1931.D50));
-		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB, null));
-		Assertions.assertDoesNotThrow(() -> ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB, RF.CIE1931.D50));
+		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB));
+		Assertions.assertDoesNotThrow(() -> ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB));
 	}
 	
 	@Test
-	@DisplayName(value = "Test: calculateRGBTransformationMatrix(ColorSpaceRGB, Illuminant) - sRGB and CIE1931 D50")
+	@DisplayName(value = "Test: calculateRGBTransformationMatrix(ColorSpaceRGB) - sRGB")
 	void testCalculateRGBTransformationMatrix_sRGB_cie1931_d50() {
-		BigDecimal[][] matrix = ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB, RF.CIE1931.D50);
+		BigDecimal[][] matrix = ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB);
 	}
 	
 	@Test
