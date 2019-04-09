@@ -13,9 +13,8 @@ import org.junit.jupiter.api.Test;
 import ch.pbu.rf.RF;
 import ch.pbu.rf.color.deltae.Delta;
 import ch.pbu.rf.color.lab.ColorLab;
-import ch.pbu.rf.color.rgb.ColorSpaceRGB;
+import ch.pbu.rf.color.rgb.ColorRGB;
 import ch.pbu.rf.color.xyz.ColorXYZ;
-import ch.pbu.rf.illuminant.Illuminant;
 import ch.yanicksenn.testing.Testing;
 
 /**
@@ -55,6 +54,23 @@ class ColorUtilTest {
 	}
 	
 	@Test
+	@DisplayName(value = "Test: convertToXYZ(ColorRGB, Illuminant) - Exceptions")
+	void testConvertToXYZColor_rgb_exceptions() {
+		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.convertToXYZ((ColorRGB) null, RF.CIE1931.D50));
+		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.convertToXYZ(new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO), null));
+		Assertions.assertDoesNotThrow(() -> ColorUtil.convertToXYZ(new ColorRGB(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO), RF.CIE1931.D50));
+	}
+	
+	@Test
+	@DisplayName(value = "Test: convertToXYZ(ColorRGB, Illuminant) - CIE1931 D50")
+	void testConvertToLabColor_rgb_cie1964_d50() {
+		ColorXYZ xyz = ColorUtil.convertToXYZ(new ColorRGB(bd("0.5", MC), bd("0.5", MC), bd("0.5", MC)), RF.CIE1931.D50);
+		Testing.assertEquals(bd("86.996", MC), lab.getL(), DELTA, MC);
+		Testing.assertEquals(bd("-105.145", MC), lab.getA(), DELTA, MC);
+		Testing.assertEquals(bd("52.884", MC), lab.getB(), DELTA, MC);
+	}
+	
+	@Test
 	@DisplayName(value = "Test: convertToLab(ColorXYZ, Illuminant) - Exceptions")
 	void testConvertToLabColor_exceptions() {
 		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.convertToLab(null, RF.CIE1931.D50));
@@ -72,16 +88,79 @@ class ColorUtilTest {
 	}
 	
 	@Test
-	@DisplayName(value = "Test: calculateRGBTransformationMatrix(ColorSpaceRGB) - Exceptions")
-	void testCalculateRGBTransformationMatrix_exceptions() {
-		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB));
-		Assertions.assertDoesNotThrow(() -> ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB));
+	@DisplayName(value = "Test: calculateRGBtoXYZTransformationMatrix(ColorSpaceRGB) - Exceptions")
+	void testCalculateRGBtoXYZTransformationMatrix_exceptions() {
+		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.calculateRGBtoXYZTransformationMatrix(null));
+		Assertions.assertDoesNotThrow(() -> ColorUtil.calculateRGBtoXYZTransformationMatrix(RF.RGB.ColorSpace.sRGB));
 	}
 	
 	@Test
-	@DisplayName(value = "Test: calculateRGBTransformationMatrix(ColorSpaceRGB) - sRGB")
-	void testCalculateRGBTransformationMatrix_sRGB_cie1931_d50() {
-		BigDecimal[][] matrix = ColorUtil.calculateRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB);
+	@DisplayName(value = "Test: calculateRGBtoXYZTransformationMatrix(ColorSpaceRGB) - sRGB")
+	void testCalculateRGBtoXYZTransformationMatrix_sRGB() {
+		BigDecimal[][] matrix = ColorUtil.calculateRGBtoXYZTransformationMatrix(RF.RGB.ColorSpace.sRGB);
+		Testing.assertEquals(bd("0.4124", MC), matrix[0][0], DELTA, MC);
+		Testing.assertEquals(bd("0.3576", MC), matrix[0][1], DELTA, MC);
+		Testing.assertEquals(bd("0.1805", MC), matrix[0][2], DELTA, MC);
+		Testing.assertEquals(bd("0.2126", MC), matrix[1][0], DELTA, MC);
+		Testing.assertEquals(bd("0.7152", MC), matrix[1][1], DELTA, MC);
+		Testing.assertEquals(bd("0.0722", MC), matrix[1][2], DELTA, MC);
+		Testing.assertEquals(bd("0.0193", MC), matrix[2][0], DELTA, MC);
+		Testing.assertEquals(bd("0.1192", MC), matrix[2][1], DELTA, MC);
+		Testing.assertEquals(bd("0.9504", MC), matrix[2][2], DELTA, MC);
+	}
+	
+	@Test
+	@DisplayName(value = "Test: calculateRGBtoXYZTransformationMatrix(ColorSpaceRGB) - Adobe RGB")
+	void testCalculateRGBtoXYZTransformationMatrix_AdobeRGB() {
+		BigDecimal[][] matrix = ColorUtil.calculateRGBtoXYZTransformationMatrix(RF.RGB.ColorSpace.AdobeRGB);
+		Testing.assertEquals(bd("0.5767", MC), matrix[0][0], DELTA, MC);
+		Testing.assertEquals(bd("0.1856", MC), matrix[0][1], DELTA, MC);
+		Testing.assertEquals(bd("0.1882", MC), matrix[0][2], DELTA, MC);
+		Testing.assertEquals(bd("0.2973", MC), matrix[1][0], DELTA, MC);
+		Testing.assertEquals(bd("0.6274", MC), matrix[1][1], DELTA, MC);
+		Testing.assertEquals(bd("0.0753", MC), matrix[1][2], DELTA, MC);
+		Testing.assertEquals(bd("0.0270", MC), matrix[2][0], DELTA, MC);
+		Testing.assertEquals(bd("0.0707", MC), matrix[2][1], DELTA, MC);
+		Testing.assertEquals(bd("0.9913", MC), matrix[2][2], DELTA, MC);
+	}
+	
+
+	
+	@Test
+	@DisplayName(value = "Test: calculateXYZtoRGBTransformationMatrix(ColorSpaceRGB) - Exceptions")
+	void testCalculateXYZtoRGBTransformationMatrix_exceptions() {
+		Assertions.assertThrows(NullPointerException.class, () -> ColorUtil.calculateXYZtoRGBTransformationMatrix(null));
+		Assertions.assertDoesNotThrow(() -> ColorUtil.calculateXYZtoRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB));
+	}
+	
+	@Test
+	@DisplayName(value = "Test: calculateXYZtoRGBTransformationMatrix(ColorSpaceRGB) - sRGB")
+	void testCalculateXYZtoRGBTransformationMatrix_sRGB() {
+		BigDecimal[][] matrix = ColorUtil.calculateXYZtoRGBTransformationMatrix(RF.RGB.ColorSpace.sRGB);
+		Testing.assertEquals(bd("3.2406", MC), matrix[0][0], DELTA, MC);
+		Testing.assertEquals(bd("-1.5372", MC), matrix[0][1], DELTA, MC);
+		Testing.assertEquals(bd("-0.4986", MC), matrix[0][2], DELTA, MC);
+		Testing.assertEquals(bd("-0.9689", MC), matrix[1][0], DELTA, MC);
+		Testing.assertEquals(bd("1.8758", MC), matrix[1][1], DELTA, MC);
+		Testing.assertEquals(bd("0.0415", MC), matrix[1][2], DELTA, MC);
+		Testing.assertEquals(bd("0.0557", MC), matrix[2][0], DELTA, MC);
+		Testing.assertEquals(bd("-0.2040", MC), matrix[2][1], DELTA, MC);
+		Testing.assertEquals(bd("1.0570", MC), matrix[2][2], DELTA, MC);
+	}
+	
+	@Test
+	@DisplayName(value = "Test: calculateXYZtoRGBTransformationMatrix(ColorSpaceRGB) - Adobe RGB")
+	void testCalculateXYZtoRGBTransformationMatrix_AdobeRGB() {
+		BigDecimal[][] matrix = ColorUtil.calculateXYZtoRGBTransformationMatrix(RF.RGB.ColorSpace.AdobeRGB);
+		Testing.assertEquals(bd("2.0416", MC), matrix[0][0], DELTA, MC);
+		Testing.assertEquals(bd("-0.5650", MC), matrix[0][1], DELTA, MC);
+		Testing.assertEquals(bd("-0.3447", MC), matrix[0][2], DELTA, MC);
+		Testing.assertEquals(bd("-0.9692", MC), matrix[1][0], DELTA, MC);
+		Testing.assertEquals(bd("1.8760", MC), matrix[1][1], DELTA, MC);
+		Testing.assertEquals(bd("0.0416", MC), matrix[1][2], DELTA, MC);
+		Testing.assertEquals(bd("0.0134", MC), matrix[2][0], DELTA, MC);
+		Testing.assertEquals(bd("-0.1184", MC), matrix[2][1], DELTA, MC);
+		Testing.assertEquals(bd("1.0152", MC), matrix[2][2], DELTA, MC);
 	}
 	
 	@Test

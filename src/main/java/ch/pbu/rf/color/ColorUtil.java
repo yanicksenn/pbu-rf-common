@@ -110,15 +110,22 @@ public class ColorUtil {
 		BigDecimal g = color.getG();
 		BigDecimal b = color.getB();
 		
-		ColorXYZ referenceWhite = calculateReferenceWhite(illuminant);
-		
-		BigDecimal[][] matrice = {
-			{ null, null, null },
-			{ null, null, null },
-			{ null, null, null }
+		BigDecimal[][] m = calculateRGBtoXYZTransformationMatrix(RF.RGB.ColorSpace.sRGB);
+		BigDecimal[][] rgb = {
+			{r},
+			{g},
+			{b}
 		};
 		
-		return null;
+		BigDecimal[][] xyz = MathUtil.calculateProduct(m, rgb, MC);
+		
+		ColorXYZ result = new ColorXYZ(
+			xyz[0][0],
+			xyz[1][0],
+			xyz[2][0]
+		);
+		
+		return result;
 	}
 
 	/**
@@ -158,16 +165,16 @@ public class ColorUtil {
 	
 	
 	/**
+	 * Calculates the transformations matrix to convert RGB to XYZ by the given color space.
 	 * 
+	 * @param colorSpace Color space.
+	 * @param illuminant Illuminant.
 	 * 
-	 * @param colorSpace
-	 * @param illuminant
-	 * 
-	 * @return
+	 * @return The transformations matrix to convert RGB to XYZ by the given color space.
 	 * 
 	 * @throws NullPointerException If colorSpace is not specified.
 	 */
-	public static BigDecimal[][] calculateRGBTransformationMatrix(ColorSpaceRGB colorSpace) throws NullPointerException {
+	public static BigDecimal[][] calculateRGBtoXYZTransformationMatrix(ColorSpaceRGB colorSpace) throws NullPointerException {
 		Objects.requireNonNull(colorSpace, "colorSpace is not specified");
 		
 		ChromaticityCoordinate r = colorSpace.getR();
@@ -220,6 +227,70 @@ public class ColorUtil {
 		return result;
 	}
 
+
+	/**
+	 * Calculates the transformations matrix to convert XYZ to RGB by the given color space.
+	 * 
+	 * @param colorSpace Color space.
+	 * @param illuminant Illuminant.
+	 * 
+	 * @return The transformations matrix to convert XYZ to RGB by the given color space.
+	 * 
+	 * @throws NullPointerException If colorSpace is not specified.
+	 */
+	public static BigDecimal[][] calculateXYZtoRGBTransformationMatrix(ColorSpaceRGB colorSpace) throws NullPointerException {
+		Objects.requireNonNull(colorSpace, "colorSpace is not specified");
+		
+		BigDecimal[][] transformationMatrix = calculateRGBtoXYZTransformationMatrix(colorSpace);
+		BigDecimal[][] result = MathUtil.calculate3x3Inverse(transformationMatrix, MC);
+		return result;
+	}
+
+	/**
+	 * Calculates the gamma correction for RGB to XYZ.
+	 * 
+	 * @param val Value.
+	 * 
+	 * @return The gamma correction for RGB to XYZ.
+	 * 
+	 * @throws NullPointerException If val is not specified.
+	 */
+	public static BigDecimal calulateRGBtoXYZGammaCorrection(BigDecimal val) {
+		Objects.requireNonNull(val, "val is not specified");
+		
+		BigDecimal result = null;
+		if (val.compareTo(bd("0.04045", MC)) < 0) {
+			result = val.divide(bd("12.92", MC), MC);
+		} else {
+			result = BigDecimalMath.pow(val.add(bd("0.055", MC), MC).divide(bd("1.055", MC), MC), bd("2.4", MC), MC);
+		}
+		
+		return result;
+	}
+
+
+	/**
+	 * Calculates the gamma correction for XYZ to RGB.
+	 * 
+	 * @param val Value.
+	 * 
+	 * @return The gamma correction for XYZ to RGB.
+	 * 
+	 * @throws NullPointerException If val is not specified.
+	 */
+	public static BigDecimal calulateXYZtoRGBGammaCorrection(BigDecimal val) {
+		Objects.requireNonNull(val, "val is not specified");
+		
+		BigDecimal result = null;
+		if (val.compareTo(bd("0.0031308", MC)) <= 0) {
+			result = val.multiply(bd("12.92", MC), MC);
+		} else {
+			result = bd("1.055", MC).multiply(BigDecimalMath.pow(val, BigDecimal.ONE.divide(bd("2.4", MC), MC), MC), MC).subtract(bd("0.055", MC), MC);
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Calculates the delta E1976 for the given two colors.
 	 * 
@@ -568,7 +639,6 @@ public class ColorUtil {
 		
 		return result;
 	}
-
 
 	public static final BigDecimal PI = BigDecimalMath.pi(MC);
 	

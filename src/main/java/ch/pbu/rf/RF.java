@@ -194,10 +194,8 @@ public final class RF {
 		public static final class ColorSpace {
 			//                                Name   Year  A  X              Y              M   CCT
 			// ---------------------------------------------------------------------------------------------------------
-			public static final ColorSpaceRGB sRGB     = new ColorSpaceRGB("Standard RGB", CIE1931.D65, bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
-//			public static final ColorSpaceRGB AdobeRGB = new ColorSpaceRGB("Adobe RGB",    bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
-//			public static final ColorSpaceRGB AppleRGB = new ColorSpaceRGB("Apple RGB",    bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
-//			public static final ColorSpaceRGB CIERGB   = new ColorSpaceRGB("CIE RGB",      bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
+			public static final ColorSpaceRGB sRGB = new ColorSpaceRGB("Standard RGB", CIE1931.D65, bd("0.64"), bd("0.33"), bd("0.30"), bd("0.60"), bd("0.15"), bd("0.06"));
+			public static final ColorSpaceRGB AdobeRGB = new ColorSpaceRGB("Adobe RGB", CIE1931.D65, bd("0.64"), bd("0.33"), bd("0.21"), bd("0.71"), bd("0.15"), bd("0.06"));
 			
 			/**
 			 * Private constructor.

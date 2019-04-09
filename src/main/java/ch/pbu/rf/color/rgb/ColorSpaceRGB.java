@@ -130,6 +130,7 @@ public class ColorSpaceRGB extends ColorSpace {
 		ColorSpaceRGB other = (ColorSpaceRGB) obj;
 		
 		return 
+			Objects.equals(this.illuminant, other.illuminant) &&
 			Objects.equals(this.r, other.r) &&
 			Objects.equals(this.g, other.g) &&
 			Objects.equals(this.b, other.b);
