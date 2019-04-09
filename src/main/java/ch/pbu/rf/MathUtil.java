@@ -268,17 +268,71 @@ public class MathUtil {
 			throw new IllegalArgumentException(String.format("width of matrix1 (%d) does not match with the height of matrix2 (%d)", m1Width, m2Height));
 		}
 		
-		BigDecimal[][] result = MathUtil.createMatrix(BigDecimal.ZERO, m2Width, m1Height);
+		BigDecimal[][] result = null;
 		
-		for (int y1 = 0; y1 < m1Height; y1++) {
-			for (int x2 = 0; x2 < m2Width; x2++) {
+		if (isRowVector(matrix1) && isColumnVector(matrix2) && m1Width == m1Height) {
+			// Row-vector and column-vector.
+			result = MathUtil.createMatrix(BigDecimal.ZERO, 1, 1);
+			
+			BigDecimal value = BigDecimal.ZERO;
+			
+			for (int i = 0; i < m1Width; i++) {
+				value = value.add(matrix1[0][i].multiply(matrix2[i][0], mc), mc);
+			}
+			
+			result[0][0] = value;
+			
+		} else if (isColumnVector(matrix1) && isRowVector(matrix2)) {
+			// Column-vector and Row-vector.
+			result = MathUtil.createMatrix(BigDecimal.ZERO, m2Width, m1Height);
+			
+			for (int y = 0; y < m1Height; y++) {
+				for (int x = 0; x < m2Width; x++) {
+					result[y][x] = matrix1[y][0].multiply(matrix2[0][x], mc);
+				}
+			}
+			
+		} else if (isColumnVector(matrix2)) {
+			// Matrix and column-vector.
+			result = MathUtil.createMatrix(BigDecimal.ZERO, m2Width, m1Height);
+			
+			for (int y = 0; y < m1Height; y++) {
 				BigDecimal value = BigDecimal.ZERO;
 				
-				for (int z = 0; z < m1Width; z++) {
-					value = value.add(matrix1[y1][z].multiply(matrix2[z][x2], mc), mc);
+				for (int x = 0; x < m2Height; x++) {
+					value = value.add(matrix1[y][x].multiply(matrix2[x][0], mc), mc);
 				}
+				
+				result[y][0] = value;
+			}
+			
+		} else if (isRowVector(matrix1)) {
+			// Row-vector and matrix.
+			result = MathUtil.createMatrix(BigDecimal.ZERO, m2Width, m1Height);
+			
+			for (int x = 0; x < m2Width; x++) {
+				BigDecimal value = BigDecimal.ZERO;
+				
+				for (int y = 0; y < m1Width; y++) {
+					value = value.add(matrix1[0][y].multiply(matrix2[y][x], mc), mc);
+				}
+				
+				result[0][x] = value;
+			}
+		} else {
+			// Matrix and matrix
+			result = MathUtil.createMatrix(BigDecimal.ZERO, m2Width, m1Height);
+			
+			for (int y1 = 0; y1 < m1Height; y1++) {
+				for (int x2 = 0; x2 < m2Width; x2++) {
+					BigDecimal value = BigDecimal.ZERO;
+					
+					for (int z = 0; z < m1Width; z++) {
+						value = value.add(matrix1[y1][z].multiply(matrix2[z][x2], mc), mc);
+					}
 
-				result[y1][x2] = value;
+					result[y1][x2] = value;
+				}
 			}
 		}
 		
@@ -356,7 +410,7 @@ public class MathUtil {
 
 		BigDecimal factor = BigDecimal.ONE.divide(determinant, mc);
 		
-		BigDecimal[][] result = {
+		BigDecimal[][] result = new BigDecimal[][] {
 			{ dxr.multiply(factor, mc), dxg.multiply(factor, mc), dxb.multiply(factor, mc) },
 			{ dyr.multiply(factor, mc), dyg.multiply(factor, mc), dyb.multiply(factor, mc) },
 			{ dzr.multiply(factor, mc), dzg.multiply(factor, mc), dzb.multiply(factor, mc) }
@@ -437,7 +491,7 @@ public class MathUtil {
 		Objects.requireNonNull(y1x1, "y1x1 is not specified");
 		Objects.requireNonNull(mc, "mc is not specified");
 		
-		BigDecimal[][] matrix = {
+		BigDecimal[][] matrix = new BigDecimal[][] {
 			{ y0x0, y0x1 },
 			{ y1x0, y1x1 }
 		};
